@@ -10,6 +10,7 @@ import { UserRoleController } from './user-role/user-role.controller';
 import { UserRoleModule } from './user-role/user-role.module';
 import {UserRole} from "./user-role/user-role.model";
 import {UsersRoles} from "./user-role/users-roles.model";
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -31,7 +32,8 @@ import {UsersRoles} from "./user-role/users-roles.model";
         }),
         UserModule,
         UserRoleModule,
-        ProductModule
+        ProductModule,
+        AuthModule
     ]
 })
 export class AppModule {}
