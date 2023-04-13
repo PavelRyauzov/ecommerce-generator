@@ -2,7 +2,6 @@ import {BelongsTo, Column, DataType, ForeignKey, Model, Table} from "sequelize-t
 import {ProductType} from "../product-type/product-type.model";
 import {ProductBrand} from "../product-brand/product-brand.model";
 
-
 @Table({tableName: 'product', createdAt: false, updatedAt: false})
 export class Product extends Model {
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
