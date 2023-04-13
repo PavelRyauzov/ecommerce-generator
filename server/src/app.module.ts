@@ -4,6 +4,7 @@ import { UserModule } from './user/user.module';
 import {ConfigModule} from "@nestjs/config";
 import * as process from "process";
 import {User} from "./user/user.model";
+import { ProductModule } from './product/product.module';
 
 
 @Module({
@@ -23,7 +24,8 @@ import {User} from "./user/user.model";
             models: [User],
             autoLoadModels: true
         }),
-        UserModule
+        UserModule,
+        ProductModule
     ]
 })
 export class AppModule {}
