@@ -8,7 +8,7 @@ async function bootstrap() {
   const config = await app.get(ConfigService);
   const port = config.get<number>('API_PORT');
 
-  const prismaService = app.get(PrismaService);
+  const prismaService = app.get(PrismaService, { strict: false });
   await prismaService.enableShutdownHooks(app);
 
   await app.listen(port || 4200, () => {
