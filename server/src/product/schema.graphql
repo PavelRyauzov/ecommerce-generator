@@ -1,0 +1,28 @@
+type Product {
+    id: ID!
+    availableForSale: Boolean!
+    title: String!
+    description: String!
+    price: Int!
+    collection: Collection!
+    collectionId: ID!
+    createdAt: String!
+    updatedAt: String!
+}
+
+input CreateProduct {
+    availableForSale: Boolean!
+    title: String!
+    description: String!
+    price: Int!
+    collectionId: ID!
+}
+
+type Query {
+    products: [Product!]!
+    product(id: ID!): Product
+}
+
+type Mutation {
+    createProduct(input: CreateProduct): Product!
+}
