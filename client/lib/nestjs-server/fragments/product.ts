@@ -7,9 +7,6 @@ const productFragment = /* GraphQL */ `
         title
         description
         price
-        collection {
-            title
-        }
     }
 `;
 

@@ -6,14 +6,10 @@ import LogoIcon from '@/components/icons/logo';
 import { Menu } from '@/lib/nestjs-server/types';
 import MobileMenu from './mobile-menu';
 import Search from './search';
+import { getMenu } from '@/lib/nestjs-server';
 
 export default async function Navbar() {
-  const menu: Menu[] = [
-    {
-      title: 'All',
-      path: '/all'
-    }
-  ];
+  const menu = await getMenu();
 
   return (
     <nav className="relative flex items-center justify-between bg-white p-4 dark:bg-black lg:px-6">

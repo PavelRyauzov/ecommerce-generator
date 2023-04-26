@@ -1,11 +1,21 @@
-import { Inter } from 'next/font/google';
+import { ThreeItemGrid } from '@/components/grid/three-items';
+import Footer from '@/components/layout/footer';
+import { Suspense } from 'react';
 
-const inter = Inter({ subsets: ['latin'] });
+export const runtime = 'edge';
 
-export default function Home() {
+export default async function HomePage() {
   return (
-    <main>
-      <h1 className={inter.className}>Hello!</h1>
-    </main>
+    <>
+      {/* @ts-expect-error Server Component */}
+      <ThreeItemGrid />
+      <Suspense>
+        {/* @ts-expect-error Server Component */}
+        <Suspense>
+          {/* @ts-expect-error Server Component */}
+          <Footer />
+        </Suspense>
+      </Suspense>
+    </>
   );
 }

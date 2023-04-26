@@ -1,6 +1,7 @@
-import { Product, ProductOperation } from '@/lib/nestjs-server/types';
+import { CollectionProductsOperation, Menu, Product, ProductOperation } from '@/lib/nestjs-server/types';
 import { SERVER_GRAPHQL_API_ENDPOINT } from '@/lib/nestjs-server/constants';
 import { getProductQuery } from '@/lib/nestjs-server/queries/product';
+import { getCollectionProductsQuery } from '@/lib/nestjs-server/queries/collection';
 
 const domain = `http://${process.env.SERVER_DOMAIN!}`;
 const endpoint = `${domain}${SERVER_GRAPHQL_API_ENDPOINT}`;
@@ -62,7 +63,16 @@ export async function getProduct(id: string): Promise<Product | undefined> {
   return reshapeProduct(res.body.data.product);
 }
 
+export async function getCollectionProducts(id: string): Promise<Product[]> {
+  const res = await serverFetch<CollectionProductsOperation>({
+    query: getCollectionProductsQuery,
+    variables: {
+      id,
+    }
+  });
 
+  return reshapeProducts(res.body.data.collection.products);
+}
 
 const reshapeProduct = (product: Product) => {
   if (!product) {
@@ -70,6 +80,32 @@ const reshapeProduct = (product: Product) => {
   }
 
   return {
-    ...product,
+    ...product
   };
 };
+
+const reshapeProducts = (products: Product[]) => {
+  const reshapedProducts = [];
+
+  for (const product of products) {
+    if (product) {
+      const reshapedProduct = reshapeProduct(product);
+
+      if (reshapedProduct) {
+        reshapedProducts.push(reshapedProduct);
+      }
+    }
+  }
+
+  return reshapedProducts;
+};
+
+export async function getMenu(): Promise<Menu[]> {
+  const menu: Menu[] = [
+    {
+      title: 'All',
+      path: '/all'
+    }
+  ];
+  return menu;
+}

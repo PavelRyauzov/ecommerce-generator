@@ -7,12 +7,12 @@ export class CollectionResolver {
   constructor(private collectionService: CollectionService) {}
 
   @Query('collections')
-  async users() {
+  async collections() {
     return this.collectionService.findAll();
   }
 
   @Query('collection')
-  async user(@Args('id') id: string) {
+  async collection(@Args('id') id: string) {
     return this.collectionService.findById(id);
   }
 

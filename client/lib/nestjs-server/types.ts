@@ -25,3 +25,14 @@ export type ProductOperation = {
     id: string;
   };
 };
+
+export type CollectionProductsOperation = {
+  data: {
+    collection: {
+      products: Product[];
+    };
+  };
+  variables: {
+    id: string;
+  };
+};
