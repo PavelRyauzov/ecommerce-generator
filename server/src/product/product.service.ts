@@ -31,6 +31,9 @@ export class ProductService {
       where: {
         id: parseInt(id),
       },
+      include: {
+        collection: true,
+      },
     });
     return product;
   }
