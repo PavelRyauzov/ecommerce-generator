@@ -18,3 +18,27 @@ model User {
 
   @@map("user")
 }
+
+model Collection {
+  id        Int       @default(autoincrement()) @id
+  title     String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  products  Product[]
+
+  @@map("collection")
+}
+
+model Product {
+  id               Int        @default(autoincrement()) @id
+  availableForSale Boolean
+  title            String
+  description      String
+  price            Int
+  collection       Collection @relation(fields: [collectionId], references: [id])
+  collectionId     Int
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+
+  @@map("product")
+}
