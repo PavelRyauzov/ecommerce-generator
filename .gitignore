@@ -3,6 +3,9 @@ dist
 node_modules
 .next
 
+# static files
+server/public/static/**
+
 # Logs
 logs
 *.log
