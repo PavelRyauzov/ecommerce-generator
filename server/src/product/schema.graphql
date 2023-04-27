@@ -6,6 +6,8 @@ type Product {
     price: Int!
     collection: Collection!
     collectionId: ID!
+    images: [Image]!
+    featuredImage: Image
     createdAt: String!
     updatedAt: String!
 }

@@ -22,7 +22,9 @@ export class ProductService {
   }
 
   async findAll(): Promise<Product[]> {
-    const products = await this.prismaService.product.findMany({});
+    const products = await this.prismaService.product.findMany({
+      include: { featuredImage: true, images: true, collection: true },
+    });
     return products;
   }
 

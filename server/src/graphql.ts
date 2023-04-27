@@ -20,21 +20,6 @@ export class CreateProduct {
     collectionId: string;
 }
 
-export class CreateUser {
-    email: string;
-    firstName: string;
-    lastName: string;
-    password: string;
-}
-
-export class UpdateUser {
-    id: string;
-    email?: Nullable<string>;
-    firstName?: Nullable<string>;
-    lastName?: Nullable<string>;
-    password?: Nullable<string>;
-}
-
 export class Collection {
     id: string;
     title: string;
@@ -48,25 +33,31 @@ export abstract class IQuery {
 
     abstract collection(id: string): Nullable<Collection> | Promise<Nullable<Collection>>;
 
+    abstract images(): Image[] | Promise<Image[]>;
+
+    abstract image(id: string): Nullable<Image> | Promise<Nullable<Image>>;
+
     abstract products(): Product[] | Promise<Product[]>;
 
     abstract product(id: string): Nullable<Product> | Promise<Nullable<Product>>;
-
-    abstract users(): User[] | Promise<User[]>;
-
-    abstract user(id: string): Nullable<User> | Promise<Nullable<User>>;
 }
 
 export abstract class IMutation {
     abstract createCollection(input?: Nullable<CreateCollection>): Collection | Promise<Collection>;
 
     abstract createProduct(input?: Nullable<CreateProduct>): Product | Promise<Product>;
+}
 
-    abstract createUser(input?: Nullable<CreateUser>): User | Promise<User>;
-
-    abstract updateUser(input?: Nullable<UpdateUser>): Nullable<User> | Promise<Nullable<User>>;
-
-    abstract deleteUser(id: string): Nullable<User> | Promise<Nullable<User>>;
+export class Image {
+    id: string;
+    fileName: string;
+    altText: string;
+    product: Product;
+    productId: number;
+    featuredBy?: Nullable<Product>;
+    featuredById?: Nullable<number>;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export class Product {
@@ -77,16 +68,8 @@ export class Product {
     price: number;
     collection: Collection;
     collectionId: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export class User {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    password: string;
+    images: Nullable<Image>[];
+    featuredImage?: Nullable<Image>;
     createdAt: string;
     updatedAt: string;
 }

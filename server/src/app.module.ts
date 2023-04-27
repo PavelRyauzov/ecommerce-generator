@@ -7,21 +7,24 @@ import { ProductModule } from './product/product.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { FileModule } from './file/file.module';
+import { ImageModule } from './image/image.module';
+import * as path from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '../.env' }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public/static'),
-    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: true,
       typePaths: ['./**/*.graphql'],
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public/static'),
+    }),
     CollectionModule,
     ProductModule,
     FileModule,
+    ImageModule,
   ],
   controllers: [],
   providers: [],

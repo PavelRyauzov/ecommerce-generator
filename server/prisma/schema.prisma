@@ -8,11 +8,12 @@ generator client {
 }
 
 model User {
-  id        Int      @default(autoincrement()) @id
-  email     String   @unique
+  id        Int    @default(autoincrement()) @id
+  email     String @unique
   firstName String
   lastName  String
   password  String
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -20,11 +21,12 @@ model User {
 }
 
 model Collection {
-  id        Int       @default(autoincrement()) @id
-  title     String
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  products  Product[]
+  id       Int       @default(autoincrement()) @id
+  title    String
+  products Product[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("collection")
 }
@@ -37,8 +39,26 @@ model Product {
   price            Int
   collection       Collection @relation(fields: [collectionId], references: [id])
   collectionId     Int
-  createdAt        DateTime   @default(now()) @map("created_at")
-  updatedAt        DateTime   @updatedAt @map("updated_at")
+  images           Image[]    @relation("AllImages")
+  featuredImage    Image?     @relation("FeaturedImage")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("product")
+}
+
+model Image {
+  id           Int      @default(autoincrement()) @id
+  fileName     String
+  altText      String
+  product      Product  @relation("AllImages", fields: [productId], references: [id])
+  productId    Int
+  featuredBy   Product? @relation("FeaturedImage", fields: [featuredById], references: [id])
+  featuredById Int?     @unique
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("image")
 }
