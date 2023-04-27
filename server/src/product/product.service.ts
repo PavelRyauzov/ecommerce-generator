@@ -34,6 +34,8 @@ export class ProductService {
         id: parseInt(id),
       },
       include: {
+        featuredImage: true,
+        images: true,
         collection: true,
       },
     });
