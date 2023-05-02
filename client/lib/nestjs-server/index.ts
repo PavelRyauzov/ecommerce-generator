@@ -71,6 +71,8 @@ export async function getCollectionProducts(id: string): Promise<Product[]> {
     }
   });
 
+  //console.log(res);
+
   return reshapeProducts(res.body.data.collection.products);
 }
 

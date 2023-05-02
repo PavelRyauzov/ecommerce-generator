@@ -8,9 +8,9 @@ export type Product = {
   availableForSale: boolean;
   title: string;
   description: string;
-  price: number;
-  collection: Collection;
-  collectionId: string;
+  price: string;
+  featuredImage: Image;
+  images: Image[];
 }
 
 export type Collection = {
@@ -35,4 +35,9 @@ export type CollectionProductsOperation = {
   variables: {
     id: string;
   };
+};
+
+export type Image = {
+  fileName: string;
+  altText: string;
 };
