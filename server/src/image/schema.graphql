@@ -2,10 +2,6 @@ type Image {
     id: ID!
     fileName: String!
     altText: String!
-    product: Product!
-    productId: Int!
-    featuredBy: Product
-    featuredById: Int
     createdAt: String!
     updatedAt: String!
 }

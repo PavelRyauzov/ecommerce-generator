@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { PrismaService } from '../prisma.service';
-import { FileService } from '../file/file.service';
 import { ImageResolver } from './image.resolver';
+import { FileModule } from '../file/file.module';
 
 @Module({
-  providers: [PrismaService, ImageService, FileService, ImageResolver],
+  imports: [FileModule],
+  providers: [PrismaService, ImageService, ImageResolver],
+  exports: [ImageService],
 })
 export class ImageModule {}

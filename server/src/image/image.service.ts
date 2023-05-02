@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Image, Product } from '@prisma/client';
+import { Image } from '@prisma/client';
 import { join } from 'path';
 import { CreateImageDto } from './dto/create-image.dto';
 import { FileService } from '../file/file.service';
@@ -15,8 +15,10 @@ export class ImageService {
 
   private readonly destDir = join(__dirname, '../..', 'public/static');
 
-  async create(base64: string, dto: CreateImageDto): Promise<Image> {
+  async create(dto: CreateImageDto): Promise<Image> {
     try {
+      const { productId, base64, ...fields } = dto;
+
       const filePath = await this.fileService.createFileFromBase64(
         base64,
         this.destDir,
@@ -26,7 +28,12 @@ export class ImageService {
       const image = await this.prismaService.image.create({
         data: {
           fileName: fileName,
-          ...dto,
+          ...fields,
+          product: {
+            connect: {
+              id: productId,
+            },
+          },
         },
       });
       return image;
@@ -36,15 +43,20 @@ export class ImageService {
   }
 
   async findAll(): Promise<Image[]> {
-    const images = await this.prismaService.image.findMany({});
+    const images = await this.prismaService.image.findMany({
+      include: {
+        product: true,
+      },
+    });
     return images;
   }
 
-  async findById(id: string): Promise<Image> {
-    const image = this.prismaService.image.findUnique({
+  async findById(id: number): Promise<Image> {
+    const image = await this.prismaService.image.findUnique({
       where: {
-        id: parseInt(id),
+        id: id,
       },
+      include: { product: true },
     });
     return image;
   }

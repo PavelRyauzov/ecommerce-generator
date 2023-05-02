@@ -7,11 +7,15 @@ export class ImageResolver {
 
   @Query('images')
   async images() {
-    return this.imageService.findAll();
+    const images = await this.imageService.findAll();
+    console.dir(images, { depth: null });
+    return images;
   }
 
   @Query('image')
   async image(@Args('id') id: string) {
-    return this.imageService.findById(id);
+    const image = await this.imageService.findById(parseInt(id));
+    console.dir(image, { depth: null });
+    return image;
   }
 }

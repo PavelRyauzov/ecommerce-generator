@@ -1,6 +1,5 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 
-import { CreateProduct } from '../graphql';
 import { ProductService } from './product.service';
 
 @Resolver('Product')
@@ -9,16 +8,15 @@ export class ProductResolver {
 
   @Query('products')
   async products() {
-    return this.productService.findAll();
+    const products = await this.productService.findAll();
+    console.dir(products, { depth: null });
+    return products;
   }
 
   @Query('product')
   async product(@Args('id') id: string) {
-    return this.productService.findById(id);
-  }
-
-  @Mutation('createProduct')
-  async create(@Args('input') input: CreateProduct) {
-    return this.productService.create(input);
+    const product = await this.productService.findById(parseInt(id));
+    console.dir(product, { depth: null });
+    return product;
   }
 }

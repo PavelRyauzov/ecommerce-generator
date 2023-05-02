@@ -1,6 +1,5 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { CollectionService } from './collection.service';
-import { CreateCollection } from '../graphql';
 
 @Resolver('Collection')
 export class CollectionResolver {
@@ -8,16 +7,15 @@ export class CollectionResolver {
 
   @Query('collections')
   async collections() {
-    return this.collectionService.findAll();
+    const collections = await this.collectionService.findAll();
+    console.dir(collections, { depth: null });
+    return collections;
   }
 
   @Query('collection')
   async collection(@Args('id') id: string) {
-    return this.collectionService.findById(id);
-  }
-
-  @Mutation('createCollection')
-  async create(@Args('input') input: CreateCollection) {
-    return this.collectionService.create(input);
+    const collection = await this.collectionService.findById(parseInt(id));
+    console.dir(collection, { depth: null });
+    return collection;
   }
 }

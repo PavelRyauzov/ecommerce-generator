@@ -1,20 +1,12 @@
 type Collection {
     id: ID!
     title: String!
-    products: [Product]!
+    products: [Product!]!
     createdAt: String!
     updatedAt: String!
-}
-
-input CreateCollection {
-    title: String!,
 }
 
 type Query {
     collections: [Collection!]!
     collection(id: ID!): Collection
-}
-
-type Mutation {
-    createCollection(input: CreateCollection): Collection!
 }

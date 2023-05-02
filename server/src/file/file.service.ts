@@ -8,8 +8,6 @@ declare const Buffer;
 @Injectable()
 export class FileService {
   async createFileFromBase64(base64: string, destDir: string): Promise<string> {
-    console.log(destDir);
-
     base64 = base64.replace(/\\r|\\n/g, '');
     const [metadata, data] = base64.split(',');
     const mimeType = metadata.split('/')[1].split(';')[0];
@@ -21,8 +19,6 @@ export class FileService {
 
     const fileName = uuid.v4();
     const filePath = path.join(destDir, fileName + '.' + mimeType);
-
-    console.log(filePath);
 
     fs.writeFile(filePath, binaryData, { flag: 'w' }, (error) => {
       if (error) {

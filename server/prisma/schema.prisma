@@ -1,14 +1,14 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id        Int    @default(autoincrement()) @id
+  id        Int    @id @default(autoincrement())
   email     String @unique
   firstName String
   lastName  String
@@ -21,7 +21,7 @@ model User {
 }
 
 model Collection {
-  id       Int       @default(autoincrement()) @id
+  id       Int       @id @default(autoincrement())
   title    String
   products Product[]
 
@@ -32,15 +32,16 @@ model Collection {
 }
 
 model Product {
-  id               Int        @default(autoincrement()) @id
+  id               Int        @id @default(autoincrement())
   availableForSale Boolean
   title            String
   description      String
   price            Int
   collection       Collection @relation(fields: [collectionId], references: [id])
   collectionId     Int
-  images           Image[]    @relation("AllImages")
-  featuredImage    Image?     @relation("FeaturedImage")
+  featuredImage    Image?     @relation("FeaturedImage", fields: [featuredImageId], references: [id])
+  featuredImageId  Int?       @unique
+  images           Image[]    @relation("Images")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -49,13 +50,12 @@ model Product {
 }
 
 model Image {
-  id           Int      @default(autoincrement()) @id
-  fileName     String
-  altText      String
-  product      Product  @relation("AllImages", fields: [productId], references: [id])
-  productId    Int
-  featuredBy   Product? @relation("FeaturedImage", fields: [featuredById], references: [id])
-  featuredById Int?     @unique
+  id         Int      @id @default(autoincrement())
+  fileName   String
+  altText    String
+  featuredBy Product? @relation("FeaturedImage")
+  product    Product  @relation("Images", fields: [productId], references: [id])
+  productId  Int
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
