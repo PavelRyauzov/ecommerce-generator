@@ -32,16 +32,17 @@ model Collection {
 }
 
 model Product {
-  id               Int        @id @default(autoincrement())
+  id               Int              @id @default(autoincrement())
   availableForSale Boolean
   title            String
   description      String
   price            Int
-  collection       Collection @relation(fields: [collectionId], references: [id])
+  collection       Collection       @relation(fields: [collectionId], references: [id])
   collectionId     Int
-  featuredImage    Image?     @relation("FeaturedImage", fields: [featuredImageId], references: [id])
-  featuredImageId  Int?       @unique
-  images           Image[]    @relation("Images")
+  featuredImage    Image?           @relation("FeaturedImage", fields: [featuredImageId], references: [id])
+  featuredImageId  Int?             @unique
+  images           Image[]          @relation("Images")
+  characteristics  Characteristic[] @relation("Characterstics")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -61,4 +62,17 @@ model Image {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("image")
+}
+
+model Characteristic {
+  id               Int     @id @default(autoincrement())
+  availableForSale Boolean
+  title            String
+  product          Product @relation("Characterstics", fields: [productId], references: [id])
+  productId        Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("characteristic")
 }

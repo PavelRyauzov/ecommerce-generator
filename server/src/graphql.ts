@@ -8,6 +8,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export class Characteristic {
+    id: string;
+    availableForSale: boolean;
+    title: string;
+    product: Product;
+}
+
 export class Collection {
     id: string;
     title: string;
@@ -46,6 +53,7 @@ export class Product {
     price: number;
     featuredImage?: Nullable<Image>;
     images: Image[];
+    characteristics?: Nullable<Nullable<Characteristic>[]>;
     createdAt: string;
     updatedAt: string;
 }

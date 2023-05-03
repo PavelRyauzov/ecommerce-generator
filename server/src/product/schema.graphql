@@ -6,6 +6,7 @@ type Product {
     price: Int!
     featuredImage: Image
     images: [Image!]!
+    characteristics: [Characteristic]
     createdAt: String!
     updatedAt: String!
 }

@@ -8,6 +8,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { FileModule } from './file/file.module';
 import { ImageModule } from './image/image.module';
+import { CharacteristicModule } from './characteristic/characteristic.module';
 import * as path from 'path';
 
 @Module({
@@ -25,6 +26,7 @@ import * as path from 'path';
     ProductModule,
     FileModule,
     ImageModule,
+    CharacteristicModule,
   ],
   controllers: [],
   providers: [],

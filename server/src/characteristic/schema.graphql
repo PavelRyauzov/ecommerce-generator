@@ -1,0 +1,6 @@
+type Characteristic {
+    id: ID!
+    availableForSale: Boolean!
+    title: String!
+    product: Product!
+}
