@@ -105,4 +105,33 @@ export class ProductService {
     });
     return product;
   }
+
+  async findSimilar(id: number): Promise<Product[]> {
+    const product = await this.prismaService.product.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    const products = await this.prismaService.product.findMany({
+      where: {
+        collectionId: product.collectionId,
+        NOT: {
+          id: product.id,
+        },
+      },
+      include: {
+        images: true,
+        featuredImage: true,
+        characteristics: {
+          include: {
+            price: true,
+          },
+        },
+        price: true,
+      },
+      take: 10,
+    });
+    return products;
+  }
 }

@@ -1,11 +1,10 @@
 'use client';
 
 import clsx from 'clsx';
-import { Characteristic, ProductOption, ProductVariant } from '@/lib/nestjs-server/types';
+import { Characteristic } from '@/lib/nestjs-server/types';
 import { createUrl } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import characteristic from '@/lib/nestjs-server/fragments/characteristic';
 
 type ParamsMap = {
   [key: string]: string; // ie. { color: 'Red', size: 'Large', ... }

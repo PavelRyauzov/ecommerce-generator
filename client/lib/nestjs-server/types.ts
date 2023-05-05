@@ -54,3 +54,12 @@ export type Characteristic = {
   title: string;
   price: Price;
 };
+
+export type ProductRecommendationsOperation = {
+  data: {
+    productRecommendations: Product[];
+  };
+  variables: {
+    productId: string;
+  };
+};

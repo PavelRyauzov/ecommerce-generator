@@ -8,3 +8,12 @@ export const getProductQuery = /* GraphQL */ `
   }
   ${productFragment}
 `;
+
+export const getProductRecommendationsQuery = /* GraphQL */ `
+    query getProductRecommendations($productId: ID!) {
+        productRecommendations(id: $productId) {
+            ...product
+        }
+    }
+    ${productFragment}
+`;

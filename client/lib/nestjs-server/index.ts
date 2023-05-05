@@ -1,6 +1,12 @@
-import { CollectionProductsOperation, Menu, Product, ProductOperation } from '@/lib/nestjs-server/types';
+import {
+  CollectionProductsOperation,
+  Menu,
+  Product,
+  ProductOperation,
+  ProductRecommendationsOperation,
+} from '@/lib/nestjs-server/types';
 import { SERVER_GRAPHQL_API_ENDPOINT } from '@/lib/nestjs-server/constants';
-import { getProductQuery } from '@/lib/nestjs-server/queries/product';
+import { getProductQuery, getProductRecommendationsQuery } from '@/lib/nestjs-server/queries/product';
 import { getCollectionProductsQuery } from '@/lib/nestjs-server/queries/collection';
 
 const domain = `http://${process.env.SERVER_DOMAIN!}`;
@@ -74,6 +80,17 @@ export async function getCollectionProducts(id: string): Promise<Product[]> {
   //console.log(res);
 
   return reshapeProducts(res.body.data.collection.products);
+}
+
+export async function getProductRecommendations(productId: string): Promise<Product[]> {
+  const res = await serverFetch<ProductRecommendationsOperation>({
+    query: getProductRecommendationsQuery,
+    variables: {
+      productId
+    }
+  });
+
+  return reshapeProducts(res.body.data.productRecommendations);
 }
 
 const reshapeProduct = (product: Product) => {

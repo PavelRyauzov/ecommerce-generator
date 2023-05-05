@@ -36,6 +36,8 @@ export abstract class IQuery {
     abstract products(): Product[] | Promise<Product[]>;
 
     abstract product(id: string): Nullable<Product> | Promise<Nullable<Product>>;
+
+    abstract productRecommendations(id: string): Nullable<Nullable<Product>[]> | Promise<Nullable<Nullable<Product>[]>>;
 }
 
 export class Image {
