@@ -1,4 +1,5 @@
 import imageFragment from './image';
+import priceFragment from './price';
 
 const productFragment = /* GraphQL */ `
     fragment product on Product {
@@ -6,7 +7,9 @@ const productFragment = /* GraphQL */ `
         availableForSale
         title
         description
-        price
+        price {
+            ...price
+        }
         featuredImage {
             ...image
         }
@@ -15,6 +18,7 @@ const productFragment = /* GraphQL */ `
         }
     }
     ${imageFragment}
+    ${priceFragment}
 `;
 
 export default productFragment;

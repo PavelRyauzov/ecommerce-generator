@@ -77,7 +77,12 @@ export class ProductService {
 
   async findAll(): Promise<Product[]> {
     const products = await this.prismaService.product.findMany({
-      include: { images: true, featuredImage: true, characteristics: true },
+      include: {
+        images: true,
+        featuredImage: true,
+        characteristics: true,
+        price: true,
+      },
     });
     return products;
   }
@@ -87,7 +92,12 @@ export class ProductService {
       where: {
         id: id,
       },
-      include: { images: true, featuredImage: true, characteristics: true },
+      include: {
+        images: true,
+        featuredImage: true,
+        characteristics: true,
+        price: true,
+      },
     });
     return product;
   }

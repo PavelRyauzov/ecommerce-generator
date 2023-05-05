@@ -8,7 +8,7 @@ export type Product = {
   availableForSale: boolean;
   title: string;
   description: string;
-  price: string;
+  price: Price;
   featuredImage: Image;
   images: Image[];
 }
@@ -40,4 +40,9 @@ export type CollectionProductsOperation = {
 export type Image = {
   fileName: string;
   altText: string;
+};
+
+export type Price = {
+  amount: number;
+  currencyCode: string;
 };

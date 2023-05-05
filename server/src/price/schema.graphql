@@ -1,0 +1,5 @@
+type Price {
+    id: ID!
+    amount: Int!
+    currencyCode: String!
+}

@@ -13,6 +13,7 @@ export class Characteristic {
     availableForSale: boolean;
     title: string;
     product: Product;
+    price: Price;
 }
 
 export class Collection {
@@ -45,12 +46,18 @@ export class Image {
     updatedAt: string;
 }
 
+export class Price {
+    id: string;
+    amount: number;
+    currencyCode: string;
+}
+
 export class Product {
     id: string;
     availableForSale: boolean;
     title: string;
     description: string;
-    price: number;
+    price: Price;
     featuredImage?: Nullable<Image>;
     images: Image[];
     characteristics?: Nullable<Nullable<Characteristic>[]>;

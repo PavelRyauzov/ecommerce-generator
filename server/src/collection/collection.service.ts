@@ -21,6 +21,7 @@ export class CollectionService {
           include: {
             featuredImage: true,
             images: true,
+            price: true,
           },
         },
       },
@@ -38,6 +39,7 @@ export class CollectionService {
           include: {
             featuredImage: true,
             images: true,
+            price: true,
           },
         },
       },
