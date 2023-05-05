@@ -36,7 +36,8 @@ model Product {
   availableForSale Boolean
   title            String
   description      String
-  price            Int
+  price            Price?           @relation("ProductPrice", fields: [priceId], references: [id])
+  priceId          Int?             @unique @default(0)
   collection       Collection       @relation(fields: [collectionId], references: [id])
   collectionId     Int
   featuredImage    Image?           @relation("FeaturedImage", fields: [featuredImageId], references: [id])
@@ -70,9 +71,24 @@ model Characteristic {
   title            String
   product          Product @relation("Characterstics", fields: [productId], references: [id])
   productId        Int
+  price            Price?  @relation("CharacteristicPrice", fields: [priceId], references: [id])
+  priceId          Int?    @unique @default(0)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("characteristic")
+}
+
+model Price {
+  id             Int             @id @default(autoincrement())
+  amount         Int
+  currencyCode   String          @default("RUB")
+  product        Product?        @relation("ProductPrice")
+  characteristic Characteristic? @relation("CharacteristicPrice")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("price")
 }
