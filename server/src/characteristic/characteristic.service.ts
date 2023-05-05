@@ -35,7 +35,11 @@ export class CharacteristicService {
   }
 
   async findAll(): Promise<Characteristic[]> {
-    const characteristics = await this.prismaService.characteristic.findMany();
+    const characteristics = await this.prismaService.characteristic.findMany({
+      include: {
+        price: true,
+      },
+    });
     return characteristics;
   }
 
@@ -43,6 +47,9 @@ export class CharacteristicService {
     const characteristic = await this.prismaService.characteristic.findUnique({
       where: {
         id: id,
+      },
+      include: {
+        price: true,
       },
     });
     return characteristic;

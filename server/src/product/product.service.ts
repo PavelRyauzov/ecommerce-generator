@@ -95,7 +95,11 @@ export class ProductService {
       include: {
         images: true,
         featuredImage: true,
-        characteristics: true,
+        characteristics: {
+          include: {
+            price: true,
+          },
+        },
         price: true,
       },
     });

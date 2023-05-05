@@ -11,13 +11,14 @@ export type Product = {
   price: Price;
   featuredImage: Image;
   images: Image[];
-}
+  characteristics: Characteristic[];
+};
 
 export type Collection = {
   id: string;
   title: string;
   products: Product[];
-}
+};
 
 export type ProductOperation = {
   data: { product: Product };
@@ -45,4 +46,11 @@ export type Image = {
 export type Price = {
   amount: number;
   currencyCode: string;
+};
+
+export type Characteristic = {
+  id: string;
+  availableForSale: boolean;
+  title: string;
+  price: Price;
 };

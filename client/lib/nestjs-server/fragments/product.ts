@@ -1,5 +1,6 @@
 import imageFragment from './image';
 import priceFragment from './price';
+import characteristicFragment from '@/lib/nestjs-server/fragments/characteristic';
 
 const productFragment = /* GraphQL */ `
     fragment product on Product {
@@ -10,6 +11,9 @@ const productFragment = /* GraphQL */ `
         price {
             ...price
         }
+        characteristics {
+            ...characteristic
+        }
         featuredImage {
             ...image
         }
@@ -19,6 +23,7 @@ const productFragment = /* GraphQL */ `
     }
     ${imageFragment}
     ${priceFragment}
+    ${characteristicFragment}
 `;
 
 export default productFragment;

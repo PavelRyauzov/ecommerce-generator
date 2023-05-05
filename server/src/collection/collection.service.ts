@@ -22,6 +22,11 @@ export class CollectionService {
             featuredImage: true,
             images: true,
             price: true,
+            characteristics: {
+              include: {
+                price: true,
+              },
+            },
           },
         },
       },
@@ -40,6 +45,11 @@ export class CollectionService {
             featuredImage: true,
             images: true,
             price: true,
+            characteristics: {
+              include: {
+                price: true,
+              },
+            },
           },
         },
       },
