@@ -1,30 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Price } from '@prisma/client';
+import { Money } from '@prisma/client';
 import { CreatePriceDto } from './dto/create-price.dto';
 
 @Injectable()
 export class PriceService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(dto: CreatePriceDto): Promise<Price> {
-    const price = await this.prismaService.price.create({
+  async create(dto: CreatePriceDto): Promise<Money> {
+    const money = await this.prismaService.money.create({
       data: dto,
     });
-    return price;
+    return money;
   }
 
-  async findAll(): Promise<Price[]> {
-    const prices = await this.prismaService.price.findMany();
-    return prices;
+  async findAll(): Promise<Money[]> {
+    const monies = await this.prismaService.money.findMany();
+    return monies;
   }
 
-  async findById(id: number): Promise<Price> {
-    const price = await this.prismaService.price.findUnique({
+  async findById(id: number): Promise<Money> {
+    const money = await this.prismaService.money.findUnique({
       where: {
         id: id,
       },
     });
-    return price;
+    return money;
   }
 }

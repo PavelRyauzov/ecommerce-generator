@@ -36,7 +36,7 @@ model Product {
   availableForSale Boolean
   title            String
   description      String
-  price            Price?           @relation("ProductPrice", fields: [priceId], references: [id])
+  price            Money?           @relation("ProductPrice", fields: [priceId], references: [id])
   priceId          Int?             @unique @default(0)
   collection       Collection       @relation(fields: [collectionId], references: [id])
   collectionId     Int
@@ -44,6 +44,8 @@ model Product {
   featuredImageId  Int?             @unique
   images           Image[]          @relation("Images")
   characteristics  Characteristic[] @relation("Characterstics")
+
+  CartItem CartItem[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -71,8 +73,10 @@ model Characteristic {
   title            String
   product          Product @relation("Characterstics", fields: [productId], references: [id])
   productId        Int
-  price            Price?  @relation("CharacteristicPrice", fields: [priceId], references: [id])
+  price            Money?  @relation("CharacteristicPrice", fields: [priceId], references: [id])
   priceId          Int?    @unique @default(0)
+
+  cartItem CartItem[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -80,15 +84,42 @@ model Characteristic {
   @@map("characteristic")
 }
 
-model Price {
+model Money {
   id             Int             @id @default(autoincrement())
   amount         Int
   currencyCode   String          @default("RUB")
   product        Product?        @relation("ProductPrice")
   characteristic Characteristic? @relation("CharacteristicPrice")
+  CartItem       CartItem?       @relation("CartItemTotalAmount")
+  Cart           Cart?           @relation("CartTotalAmount")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("price")
+}
+
+model Cart {
+  id            Int        @id @default(autoincrement())
+  lines         CartItem[]
+  totalQuantity Int
+  totalAmount   Money      @relation("CartTotalAmount", fields: [moneyId], references: [id])
+  moneyId       Int        @unique @default(0)
+}
+
+model CartItem {
+  id               Int            @id @default(autoincrement())
+  quantity         Int
+  totalAmount      Money          @relation("CartItemTotalAmount", fields: [moneyId], references: [id])
+  moneyId          Int            @unique @default(0)
+  product          Product        @relation(fields: [productId], references: [id])
+  productId        Int
+  characteristic   Characteristic @relation(fields: [characteristicId], references: [id])
+  characteristicId Int
+
+  Cart   Cart? @relation(fields: [cartId], references: [id])
+  cartId Int?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
