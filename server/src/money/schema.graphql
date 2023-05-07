@@ -1,4 +1,4 @@
-type Price {
+type Money {
     id: ID!
     amount: Int!
     currencyCode: String!

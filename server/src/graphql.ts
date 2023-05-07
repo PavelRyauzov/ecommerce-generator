@@ -8,23 +8,30 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export class Characteristic {
-    id: string;
-    availableForSale: boolean;
-    title: string;
-    product: Product;
-    price: Price;
+export class CartLineInput {
+    productId: number;
+    characteristicId: number;
+    quantity: number;
 }
 
-export class Collection {
+export class Cart {
     id: string;
-    title: string;
-    products: Product[];
-    createdAt: string;
-    updatedAt: string;
+    lines?: Nullable<Nullable<CartItem>[]>;
+    totalQuantity?: Nullable<number>;
+    totalAmount?: Nullable<Money>;
+}
+
+export class CartItem {
+    id: string;
+    quantity: number;
+    totalAmount: Money;
+    product?: Nullable<Product>;
+    characteristic?: Nullable<Characteristic>;
 }
 
 export abstract class IQuery {
+    abstract cart(): Cart[] | Promise<Cart[]>;
+
     abstract collections(): Collection[] | Promise<Collection[]>;
 
     abstract collection(id: string): Nullable<Collection> | Promise<Nullable<Collection>>;
@@ -40,6 +47,26 @@ export abstract class IQuery {
     abstract productRecommendations(id: string): Nullable<Nullable<Product>[]> | Promise<Nullable<Nullable<Product>[]>>;
 }
 
+export abstract class IMutation {
+    abstract createCart(input?: Nullable<CartLineInput[]>): Cart | Promise<Cart>;
+}
+
+export class Characteristic {
+    id: string;
+    availableForSale: boolean;
+    title: string;
+    product: Product;
+    price: Money;
+}
+
+export class Collection {
+    id: string;
+    title: string;
+    products: Product[];
+    createdAt: string;
+    updatedAt: string;
+}
+
 export class Image {
     id: string;
     fileName: string;
@@ -48,7 +75,7 @@ export class Image {
     updatedAt: string;
 }
 
-export class Price {
+export class Money {
     id: string;
     amount: number;
     currencyCode: string;
@@ -59,7 +86,7 @@ export class Product {
     availableForSale: boolean;
     title: string;
     description: string;
-    price: Price;
+    price: Money;
     featuredImage?: Nullable<Image>;
     images: Image[];
     characteristics?: Nullable<Nullable<Characteristic>[]>;

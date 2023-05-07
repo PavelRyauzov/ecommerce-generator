@@ -2,21 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Characteristic } from '@prisma/client';
 import { CreateCharacteristicDto } from './dto/create-characteristic.dto';
-import { CreatePriceDto } from '../price/dto/create-price.dto';
-import { PriceService } from '../price/price.service';
+import { CreateMoneyDto } from '../money/dto/create-money.dto';
+import { MoneyService } from '../money/money.service';
 
 @Injectable()
 export class CharacteristicService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly priceService: PriceService,
+    private readonly moneyService: MoneyService,
   ) {}
 
   async create(
     characteristicDto: CreateCharacteristicDto,
-    priceDto: CreatePriceDto,
+    priceDto: CreateMoneyDto,
   ): Promise<Characteristic> {
-    const price = await this.priceService.create(priceDto);
+    const price = await this.moneyService.create(priceDto);
 
     const { productId, ...fields } = characteristicDto;
 

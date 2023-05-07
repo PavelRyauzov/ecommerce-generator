@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Money } from '@prisma/client';
-import { CreatePriceDto } from './dto/create-price.dto';
+import { CreateMoneyDto } from './dto/create-money.dto';
 
 @Injectable()
-export class PriceService {
+export class MoneyService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(dto: CreatePriceDto): Promise<Money> {
+  async create(dto: CreateMoneyDto): Promise<Money> {
     const money = await this.prismaService.money.create({
       data: dto,
     });

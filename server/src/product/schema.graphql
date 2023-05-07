@@ -3,7 +3,7 @@ type Product {
     availableForSale: Boolean!
     title: String!
     description: String!
-    price: Price!
+    price: Money!
     featuredImage: Image
     images: [Image!]!
     characteristics: [Characteristic]

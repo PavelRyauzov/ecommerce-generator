@@ -4,23 +4,23 @@ import { Product } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ImageService } from '../image/image.service';
 import { CreateImageWithProductDto } from './dto/create-image-wth-product.dto';
-import { CreatePriceDto } from '../price/dto/create-price.dto';
-import { PriceService } from '../price/price.service';
+import { CreateMoneyDto } from '../money/dto/create-money.dto';
+import { MoneyService } from '../money/money.service';
 
 @Injectable()
 export class ProductService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly priceService: PriceService,
+    private readonly moneyService: MoneyService,
     private readonly imageService: ImageService,
   ) {}
 
   async create(
     productDto: CreateProductDto,
-    priceDto: CreatePriceDto,
+    priceDto: CreateMoneyDto,
     imageDtos?: CreateImageWithProductDto[] | null,
   ): Promise<Product> {
-    const price = await this.priceService.create(priceDto);
+    const price = await this.moneyService.create(priceDto);
 
     const { collectionId, ...fields } = productDto;
 

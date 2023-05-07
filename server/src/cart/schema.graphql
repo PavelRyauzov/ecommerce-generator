@@ -1,0 +1,28 @@
+type Cart {
+    id: ID!
+    lines: [CartItem]
+    totalQuantity: Int
+    totalAmount: Money
+}
+
+type CartItem {
+    id: ID!
+    quantity: Int!
+    totalAmount: Money!
+    product: Product
+    characteristic: Characteristic
+}
+
+input CartLineInput {
+    productId: ID!,
+    characteristicId: ID!,
+    quantity: Int!
+}
+
+type Query {
+    cart: [Cart!]!
+}
+
+type Mutation {
+    createCart(input: [CartLineInput!]): Cart!
+}

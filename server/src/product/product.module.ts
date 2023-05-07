@@ -3,10 +3,11 @@ import { ProductService } from './product.service';
 import { ProductResolver } from './product.resolver';
 import { PrismaService } from '../prisma.service';
 import { ImageModule } from '../image/image.module';
-import { PriceModule } from '../price/price.module';
+import { MoneyModule } from '../money/money.module';
 
 @Module({
-  imports: [PriceModule, ImageModule],
+  imports: [MoneyModule, ImageModule],
   providers: [PrismaService, ProductService, ProductResolver],
+  exports: [ProductService],
 })
 export class ProductModule {}

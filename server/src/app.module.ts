@@ -9,7 +9,8 @@ import { join } from 'path';
 import { FileModule } from './file/file.module';
 import { ImageModule } from './image/image.module';
 import { CharacteristicModule } from './characteristic/characteristic.module';
-import { PriceModule } from './price/price.module';
+import { MoneyModule } from './money/money.module';
+import { CartModule } from './cart/cart.module';
 import * as path from 'path';
 
 @Module({
@@ -28,7 +29,8 @@ import * as path from 'path';
     FileModule,
     ImageModule,
     CharacteristicModule,
-    PriceModule,
+    MoneyModule,
+    CartModule,
   ],
   controllers: [],
   providers: [],

@@ -1,4 +1,4 @@
-export class CreatePriceDto {
+export class CreateMoneyDto {
   readonly amount: number;
   readonly currencyCode: string;
 }

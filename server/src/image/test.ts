@@ -8,12 +8,12 @@ import { CreateProductDto } from '../product/dto/create-product.dto';
 import { CreateImageWithProductDto } from '../product/dto/create-image-wth-product.dto';
 import { CreateCharacteristicDto } from '../characteristic/dto/create-characteristic.dto';
 import { CharacteristicService } from '../characteristic/characteristic.service';
-import { PriceService } from '../price/price.service';
-import { CreatePriceDto } from '../price/dto/create-price.dto';
+import { MoneyService } from '../money/money.service';
+import { CreateMoneyDto } from '../money/dto/create-money.dto';
 
 const prismaService = new PrismaService();
 const fileService = new FileService();
-const priceService = new PriceService(prismaService);
+const priceService = new MoneyService(prismaService);
 const imageService = new ImageService(prismaService, fileService);
 const productService = new ProductService(
   prismaService,
@@ -32,7 +32,7 @@ export class TestImage {
 
   async productCreate(
     productDto: CreateProductDto,
-    priceDto: CreatePriceDto,
+    priceDto: CreateMoneyDto,
     imageDtos: CreateImageWithProductDto[],
   ) {
     const product = await productService.create(
@@ -44,7 +44,7 @@ export class TestImage {
 
   async charaterCreate(
     characterDto: CreateCharacteristicDto,
-    priceDto: CreatePriceDto,
+    priceDto: CreateMoneyDto,
   ) {
     const character = await characterService.create(characterDto, priceDto);
   }
@@ -67,11 +67,11 @@ const test = new TestImage();
 test.charaterCreate(
   {
     availableForSale: true,
-    title: 'Black',
-    productId: 9,
+    title: 'White',
+    productId: 3,
   },
   {
-    amount: 70000,
+    amount: 85000,
     currencyCode: 'RUB',
   },
 );

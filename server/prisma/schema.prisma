@@ -45,7 +45,7 @@ model Product {
   images           Image[]          @relation("Images")
   characteristics  Characteristic[] @relation("Characterstics")
 
-  CartItem CartItem[]
+  cartItems CartItem[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -76,7 +76,7 @@ model Characteristic {
   price            Money?  @relation("CharacteristicPrice", fields: [priceId], references: [id])
   priceId          Int?    @unique @default(0)
 
-  cartItem CartItem[]
+  cartItems CartItem[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -90,21 +90,23 @@ model Money {
   currencyCode   String          @default("RUB")
   product        Product?        @relation("ProductPrice")
   characteristic Characteristic? @relation("CharacteristicPrice")
-  CartItem       CartItem?       @relation("CartItemTotalAmount")
-  Cart           Cart?           @relation("CartTotalAmount")
+  cartItem       CartItem?       @relation("CartItemTotalAmount")
+  cart           Cart?           @relation("CartTotalAmount")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("price")
+  @@map("money")
 }
 
 model Cart {
   id            Int        @id @default(autoincrement())
   lines         CartItem[]
-  totalQuantity Int
-  totalAmount   Money      @relation("CartTotalAmount", fields: [moneyId], references: [id])
-  moneyId       Int        @unique @default(0)
+  totalQuantity Int?
+  totalAmount   Money?     @relation("CartTotalAmount", fields: [moneyId], references: [id])
+  moneyId       Int?       @unique @default(0)
+
+  @@map("cart")
 }
 
 model CartItem {
@@ -117,9 +119,11 @@ model CartItem {
   characteristic   Characteristic @relation(fields: [characteristicId], references: [id])
   characteristicId Int
 
-  Cart   Cart? @relation(fields: [cartId], references: [id])
+  cart   Cart? @relation(fields: [cartId], references: [id])
   cartId Int?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("cart_item")
 }

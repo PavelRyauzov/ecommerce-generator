@@ -3,5 +3,5 @@ type Characteristic {
     availableForSale: Boolean!
     title: String!
     product: Product!
-    price: Price!
+    price: Money!
 }
