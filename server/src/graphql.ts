@@ -9,8 +9,8 @@
 /* eslint-disable */
 
 export class CartLineInput {
-    productId: number;
-    characteristicId: number;
+    productId: string;
+    characteristicId: string;
     quantity: number;
 }
 

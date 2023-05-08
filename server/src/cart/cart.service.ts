@@ -18,41 +18,49 @@ export class CartService {
   async create(inputs: CartLineInput[]): Promise<Cart> {
     const cart = await this.prismaService.cart.create({
       data: {
-        lines: null,
+        lines: undefined,
+        moneyId: null,
       },
     });
+
+    if (!inputs || inputs.length === 0) {
+      return cart;
+    }
 
     const createdCartItems = [];
 
     for (const input of inputs) {
-      const hasCharacteristic = Boolean(input.characteristicId);
+      const { productId, characteristicId, quantity } = input;
+
+      const hasCharacteristic = Boolean(parseInt(characteristicId));
       const { priceId } = hasCharacteristic
-        ? await this.characteristicService.findById(input.characteristicId)
-        : await this.productService.findById(input.productId);
+        ? await this.characteristicService.findById(parseInt(characteristicId))
+        : await this.productService.findById(parseInt(productId));
 
       const price = await this.moneyService.findById(priceId);
 
       const totalAmount = await this.moneyService.create({
-        amount: input.quantity * price.amount,
+        amount: quantity * price.amount,
         currencyCode: price.currencyCode,
       });
 
       const cartItem = await this.prismaService.cartItem.create({
         data: {
-          quantity: input.quantity,
+          quantity: quantity,
           totalAmount: {
             connect: { id: totalAmount.id },
           },
           product: {
-            connect: { id: input.productId },
+            connect: { id: parseInt(productId) },
           },
           characteristic: hasCharacteristic
-            ? { connect: { id: input.characteristicId } }
-            : null,
+            ? { connect: { id: parseInt(characteristicId) } }
+            : undefined,
           cart: {
             connect: { id: cart.id },
           },
         },
+        include: { totalAmount: true },
       });
 
       createdCartItems.push(cartItem);
