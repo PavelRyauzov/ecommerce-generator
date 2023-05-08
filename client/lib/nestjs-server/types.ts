@@ -8,7 +8,7 @@ export type Product = {
   availableForSale: boolean;
   title: string;
   description: string;
-  price: Price;
+  price: Money;
   featuredImage: Image;
   images: Image[];
   characteristics: Characteristic[];
@@ -43,7 +43,7 @@ export type Image = {
   altText: string;
 };
 
-export type Price = {
+export type Money = {
   amount: number;
   currencyCode: string;
 };
@@ -52,7 +52,7 @@ export type Characteristic = {
   id: string;
   availableForSale: boolean;
   title: string;
-  price: Price;
+  price: Money;
 };
 
 export type ProductRecommendationsOperation = {
@@ -62,4 +62,20 @@ export type ProductRecommendationsOperation = {
   variables: {
     productId: string;
   };
+};
+
+export type Cart = {
+  id: string;
+  checkoutUrl: string;
+  lines: CartItem[];
+  totalQuantity: number;
+  totalAmount: Money;
+};
+
+export type CartItem = {
+  id: string;
+  quantity: number;
+  totalAmount: Money;
+  product: Product;
+  characteristic: Characteristic;
 };

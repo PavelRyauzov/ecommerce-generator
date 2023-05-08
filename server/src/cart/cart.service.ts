@@ -18,8 +18,11 @@ export class CartService {
   async create(inputs: CartLineInput[]): Promise<Cart> {
     const cart = await this.prismaService.cart.create({
       data: {
-        lines: undefined,
         moneyId: null,
+      },
+      include: {
+        lines: true,
+        totalAmount: true,
       },
     });
 
@@ -100,6 +103,7 @@ export class CartService {
       where: {
         id: id,
       },
+      include: { totalAmount: true },
     });
     return cart;
   }

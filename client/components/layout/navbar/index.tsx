@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
 
+import Cart from '@/components/cart';
 import CartIcon from '@/components/icons/cart';
 import LogoIcon from '@/components/icons/logo';
 import { Menu } from '@/lib/nestjs-server/types';
@@ -42,7 +43,10 @@ export default async function Navbar() {
       </div>
 
       <div className="flex w-1/3 justify-end">
-        <Suspense fallback={<CartIcon className="h-6" />}></Suspense>
+        <Suspense fallback={<CartIcon className="h-6" />}>
+          {/* @ts-expect-error Server Component */}
+          <Cart />
+        </Suspense>
       </div>
     </nav>
   );

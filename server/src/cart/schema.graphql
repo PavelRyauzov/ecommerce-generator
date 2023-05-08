@@ -20,7 +20,7 @@ input CartLineInput {
 }
 
 type Query {
-    cart: [Cart!]!
+    cart(id: ID!): Cart
 }
 
 type Mutation {

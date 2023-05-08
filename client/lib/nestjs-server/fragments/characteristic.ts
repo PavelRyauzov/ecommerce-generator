@@ -4,7 +4,7 @@ const characteristicFragment = /* GraphQL */ `
         availableForSale
         title
         price {
-            ...price
+            ...money
         }
     }
 `;

@@ -30,7 +30,7 @@ export class CartItem {
 }
 
 export abstract class IQuery {
-    abstract cart(): Cart[] | Promise<Cart[]>;
+    abstract cart(id: string): Nullable<Cart> | Promise<Nullable<Cart>>;
 
     abstract collections(): Collection[] | Promise<Collection[]>;
 

@@ -1,13 +1,19 @@
 import {
+  Cart,
   CollectionProductsOperation,
   Menu,
   Product,
   ProductOperation,
-  ProductRecommendationsOperation,
+  ProductRecommendationsOperation
 } from '@/lib/nestjs-server/types';
 import { SERVER_GRAPHQL_API_ENDPOINT } from '@/lib/nestjs-server/constants';
-import { getProductQuery, getProductRecommendationsQuery } from '@/lib/nestjs-server/queries/product';
+import {
+  getProductQuery,
+  getProductRecommendationsQuery
+} from '@/lib/nestjs-server/queries/product';
 import { getCollectionProductsQuery } from '@/lib/nestjs-server/queries/collection';
+import { getCartQuery } from '@/lib/nestjs-server/queries/cart';
+import { createCartMutation } from '@/lib/nestjs-server/mutations/cart';
 
 const domain = `http://${process.env.SERVER_DOMAIN!}`;
 const endpoint = `${domain}${SERVER_GRAPHQL_API_ENDPOINT}`;
@@ -73,7 +79,7 @@ export async function getCollectionProducts(id: string): Promise<Product[]> {
   const res = await serverFetch<CollectionProductsOperation>({
     query: getCollectionProductsQuery,
     variables: {
-      id,
+      id
     }
   });
 
@@ -128,3 +134,49 @@ export async function getMenu(): Promise<Menu[]> {
   ];
   return menu;
 }
+
+export async function getCart(cartId: string): Promise<Cart | null> {
+  const res = await serverFetch<CartOperation>({
+    query: getCartQuery,
+    variables: { cartId },
+    cache: 'no-store'
+  });
+
+  if (!res.body.data.cart) {
+    return null;
+  }
+
+  return reshapeCart(res.body.data.cart);
+}
+
+export async function createCart(): Promise<Cart> {
+  const res = await serverFetch<CreateCartOperation>({
+    query: createCartMutation,
+    cache: 'no-store'
+  });
+
+  console.dir(res.body.data)
+
+  return reshapeCart(res.body.data.createCart);
+}
+
+export type CreateCartOperation = {
+  data: {
+    createCart: Cart;
+  };
+};
+
+const reshapeCart = (cart: Cart): Cart => {
+  return {
+    ...cart
+  };
+};
+
+export type CartOperation = {
+  data: {
+    cart: Cart;
+  };
+  variables: {
+    cartId: string;
+  };
+};

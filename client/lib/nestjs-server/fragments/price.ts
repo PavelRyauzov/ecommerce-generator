@@ -1,8 +1,8 @@
-const priceFragment = /* GraphQL */ `
-    fragment price on Price {
+const moneyFragment = /* GraphQL */ `
+    fragment money on Money {
         amount
         currencyCode
     }
 `;
 
-export default priceFragment;
+export default moneyFragment;
