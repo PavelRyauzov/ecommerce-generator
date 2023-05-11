@@ -18,11 +18,13 @@ type MerchandiseSearchParams = {
 export default function CartModal({
   isOpen,
   onClose,
-  cart
+  cart,
+  staticFilesUrl
 }: {
   isOpen: boolean;
   onClose: () => void;
   cart: Cart;
+  staticFilesUrl?: string;
 }) {
   return (
     <AnimatePresence initial={false}>
@@ -81,7 +83,9 @@ export default function CartModal({
                     {cart.lines.map((item, i) => {
                       const merchandiseSearchParams = {} as MerchandiseSearchParams;
 
-                      merchandiseSearchParams['characteristic'] = item.characteristic.title;
+                      if (item.characteristic) {
+                        merchandiseSearchParams['characteristic'] = item.characteristic.title;
+                      }
 
                       const merchandiseUrl = createUrl(
                         `/product/${item.product.id}`,
@@ -100,17 +104,12 @@ export default function CartModal({
                                 className="h-full w-full object-cover"
                                 width={64}
                                 height={64}
-                                alt={
-                                  item.product.featuredImage.altText ||
-                                  item.product.title
-                                }
-                                src={item.product.featuredImage.url}
+                                alt={item.product.featuredImage.altText || item.product.title}
+                                src={'http://localhost:4200/' + item.product.featuredImage.fileName}
                               />
                             </div>
                             <div className="flex flex-1 flex-col text-base">
-                              <span className="font-semibold">
-                                {item.product.title}
-                              </span>
+                              <span className="font-semibold">{item.product.title}</span>
                               {item.product.title ? (
                                 <p className="text-sm" data-testid="cart-product-variant">
                                   {item.product.title}

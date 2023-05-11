@@ -21,7 +21,15 @@ export class CartService {
         moneyId: null,
       },
       include: {
-        lines: true,
+        lines: {
+          include: {
+            product: {
+              include: {
+                featuredImage: true,
+              },
+            },
+          },
+        },
         totalAmount: true,
       },
     });
@@ -30,13 +38,18 @@ export class CartService {
       return cart;
     }
 
+    const updatedCart = this.addLines(cart.id, inputs);
+
+    return updatedCart;
+  }
+
+  async addLines(cartId: number, lines: CartLineInput[]): Promise<Cart> {
     const createdCartItems = [];
 
-    for (const input of inputs) {
-      const { productId, characteristicId, quantity } = input;
+    for (const line of lines) {
+      const { productId, characteristicId, quantity } = line;
 
-      const hasCharacteristic = Boolean(parseInt(characteristicId));
-      const { priceId } = hasCharacteristic
+      const { priceId } = characteristicId
         ? await this.characteristicService.findById(parseInt(characteristicId))
         : await this.productService.findById(parseInt(productId));
 
@@ -56,11 +69,11 @@ export class CartService {
           product: {
             connect: { id: parseInt(productId) },
           },
-          characteristic: hasCharacteristic
+          characteristic: characteristicId
             ? { connect: { id: parseInt(characteristicId) } }
-            : undefined,
+            : {},
           cart: {
-            connect: { id: cart.id },
+            connect: { id: cartId },
           },
         },
         include: { totalAmount: true },
@@ -69,7 +82,7 @@ export class CartService {
       createdCartItems.push(cartItem);
     }
 
-    const totalQuantity = inputs.reduce((acc, curr) => acc + curr.quantity, 0);
+    const totalQuantity = lines.reduce((acc, curr) => acc + curr.quantity, 0);
     const cartTotalAmountValue = createdCartItems.reduce(
       (acc, curr) => acc + curr.totalAmount.amount,
       0,
@@ -82,7 +95,7 @@ export class CartService {
 
     const updatedCart = await this.prismaService.cart.update({
       where: {
-        id: cart.id,
+        id: cartId,
       },
       data: {
         lines: {
@@ -93,9 +106,13 @@ export class CartService {
           connect: { id: cartTotalAmount.id },
         },
       },
+      include: {
+        lines: true,
+        totalAmount: true,
+      },
     });
 
-    return cart;
+    return updatedCart;
   }
 
   async findById(id: number): Promise<Cart> {
@@ -103,8 +120,21 @@ export class CartService {
       where: {
         id: id,
       },
-      include: { totalAmount: true },
+      include: {
+        lines: {
+          include: {
+            product: {
+              include: {
+                featuredImage: true,
+              },
+            },
+            totalAmount: true,
+          },
+        },
+        totalAmount: true,
+      },
     });
+
     return cart;
   }
 }

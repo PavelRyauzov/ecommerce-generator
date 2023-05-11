@@ -13,7 +13,7 @@ import {
 } from '@/lib/nestjs-server/queries/product';
 import { getCollectionProductsQuery } from '@/lib/nestjs-server/queries/collection';
 import { getCartQuery } from '@/lib/nestjs-server/queries/cart';
-import { createCartMutation } from '@/lib/nestjs-server/mutations/cart';
+import { addToCartMutation, createCartMutation } from '@/lib/nestjs-server/mutations/cart';
 
 const domain = `http://${process.env.SERVER_DOMAIN!}`;
 const endpoint = `${domain}${SERVER_GRAPHQL_API_ENDPOINT}`;
@@ -178,5 +178,36 @@ export type CartOperation = {
   };
   variables: {
     cartId: string;
+  };
+};
+
+export async function addToCart(
+  cartId: string,
+  lines: { productId: string; characteristicId?: string; quantity: number }[]
+): Promise<Cart> {
+  const res = await serverFetch<AddToCartOperation>({
+    query: addToCartMutation,
+    variables: {
+      cartId,
+      lines
+    },
+    cache: 'no-store'
+  });
+  return reshapeCart(res.body.data.cartLinesAdd.cart);
+}
+
+export type AddToCartOperation = {
+  data: {
+    cartLinesAdd: {
+      cart: Cart;
+    };
+  };
+  variables: {
+    cartId: string;
+    lines: {
+      productId: string;
+      characteristicId: string;
+      quantity: number;
+    }[];
   };
 };

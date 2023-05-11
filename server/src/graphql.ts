@@ -10,7 +10,7 @@
 
 export class CartLineInput {
     productId: string;
-    characteristicId: string;
+    characteristicId?: Nullable<string>;
     quantity: number;
 }
 
@@ -49,6 +49,8 @@ export abstract class IQuery {
 
 export abstract class IMutation {
     abstract createCart(input?: Nullable<CartLineInput[]>): Cart | Promise<Cart>;
+
+    abstract cartLinesAdd(cartId: string, lines?: Nullable<CartLineInput[]>): Cart | Promise<Cart>;
 }
 
 export class Characteristic {

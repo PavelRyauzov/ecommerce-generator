@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 
 import Grid from '@/components/grid';
 import Footer from '@/components/layout/footer';
+import { AddToCart } from '@/components/product/add-to-cart';
 import ProductGridItems from '@/components/layout/product-grid-items';
 import { Gallery } from '@/components/product/gallery';
 import { VariantSelector } from '@/components/product/variant-selector';
@@ -40,7 +41,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
             <Prose className="mb-6 text-sm leading-tight" html={product.description} />
           ) : null}
 
-          {/*<AddToCart variants={product.variants} availableForSale={product.availableForSale} />*/}
+          <AddToCart variant={product} availableForSale={product.availableForSale} />
         </div>
       </div>
       <Suspense>

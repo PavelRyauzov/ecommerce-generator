@@ -11,6 +11,7 @@ export default async function Cart() {
 
   if (cartId) {
     cart = await getCart(cartId);
+    console.dir(cart, { depth: null });
   }
 
   // If the `cartId` from the cookie is not set or the cart is empty
@@ -19,7 +20,6 @@ export default async function Cart() {
   if (!cartId || !cart) {
     cart = await createCart();
     cartIdUpdated = true;
-    console.dir(cart);
   }
 
   return <CartButton cart={cart} cartIdUpdated={cartIdUpdated} />;

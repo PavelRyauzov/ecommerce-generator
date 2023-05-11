@@ -11,6 +11,11 @@ const cartFragment = /* GraphQL */ `
             product {
                 id
                 title
+                featuredImage {
+                    id
+                    fileName
+                    altText
+                }
             }
         }
         totalQuantity

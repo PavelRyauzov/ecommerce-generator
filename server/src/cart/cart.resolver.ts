@@ -17,4 +17,13 @@ export class CartResolver {
     const cart = await this.cartService.create(inputs);
     return cart;
   }
+
+  @Mutation('cartLinesAdd')
+  async addLines(
+    @Args('cartId') cartId: string,
+    @Args('lines') lines: CartLineInput[],
+  ) {
+    const cart = await this.cartService.addLines(parseInt(cartId), lines);
+    return cart;
+  }
 }
