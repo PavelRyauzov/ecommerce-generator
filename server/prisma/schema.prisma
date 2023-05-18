@@ -90,8 +90,6 @@ model Money {
   currencyCode   String          @default("RUB")
   product        Product?        @relation("ProductPrice")
   characteristic Characteristic? @relation("CharacteristicPrice")
-  cartItem       CartItem?       @relation("CartItemTotalAmount")
-  cart           Cart?           @relation("CartTotalAmount")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -100,11 +98,8 @@ model Money {
 }
 
 model Cart {
-  id            Int        @id @default(autoincrement())
-  lines         CartItem[]
-  totalQuantity Int?
-  totalAmount   Money?     @relation("CartTotalAmount", fields: [moneyId], references: [id])
-  moneyId       Int?       @unique @default(0)
+  id    Int        @id @default(autoincrement())
+  lines CartItem[]
 
   @@map("cart")
 }
@@ -112,8 +107,6 @@ model Cart {
 model CartItem {
   id               Int             @id @default(autoincrement())
   quantity         Int
-  totalAmount      Money           @relation("CartItemTotalAmount", fields: [moneyId], references: [id])
-  moneyId          Int             @unique @default(0)
   product          Product         @relation(fields: [productId], references: [id])
   productId        Int
   characteristic   Characteristic? @relation(fields: [characteristicId], references: [id])

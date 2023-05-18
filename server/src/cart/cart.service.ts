@@ -17,9 +17,7 @@ export class CartService {
 
   async create(inputs: CartLineInput[]): Promise<Cart> {
     const cart = await this.prismaService.cart.create({
-      data: {
-        moneyId: null,
-      },
+      data: {},
       include: {
         lines: {
           include: {
@@ -30,12 +28,11 @@ export class CartService {
             },
           },
         },
-        totalAmount: true,
       },
     });
 
     if (!inputs || inputs.length === 0) {
-      return cart;
+      return await this.getCartForClient(cart.id);
     }
 
     const updatedCart = this.addLines(cart.id, inputs);
@@ -43,82 +40,10 @@ export class CartService {
     return updatedCart;
   }
 
-  async addLines(cartId: number, lines: CartLineInput[]): Promise<Cart> {
-    const createdCartItems = [];
-
-    for (const line of lines) {
-      const { productId, characteristicId, quantity } = line;
-
-      const { priceId } = characteristicId
-        ? await this.characteristicService.findById(parseInt(characteristicId))
-        : await this.productService.findById(parseInt(productId));
-
-      const price = await this.moneyService.findById(priceId);
-
-      const totalAmount = await this.moneyService.create({
-        amount: quantity * price.amount,
-        currencyCode: price.currencyCode,
-      });
-
-      const cartItem = await this.prismaService.cartItem.create({
-        data: {
-          quantity: quantity,
-          totalAmount: {
-            connect: { id: totalAmount.id },
-          },
-          product: {
-            connect: { id: parseInt(productId) },
-          },
-          characteristic: characteristicId
-            ? { connect: { id: parseInt(characteristicId) } }
-            : {},
-          cart: {
-            connect: { id: cartId },
-          },
-        },
-        include: { totalAmount: true },
-      });
-
-      createdCartItems.push(cartItem);
-    }
-
-    const totalQuantity = lines.reduce((acc, curr) => acc + curr.quantity, 0);
-    const cartTotalAmountValue = createdCartItems.reduce(
-      (acc, curr) => acc + curr.totalAmount.amount,
-      0,
-    );
-
-    const cartTotalAmount = await this.moneyService.create({
-      amount: cartTotalAmountValue,
-      currencyCode: 'RUB',
-    });
-
-    const updatedCart = await this.prismaService.cart.update({
+  private async getCartForClient(cartId: number) {
+    const { id, lines } = await this.prismaService.cart.findUnique({
       where: {
         id: cartId,
-      },
-      data: {
-        lines: {
-          connect: createdCartItems.map((cartItem) => ({ id: cartItem.id })),
-        },
-        totalQuantity: totalQuantity,
-        totalAmount: {
-          connect: { id: cartTotalAmount.id },
-        },
-      },
-      include: {
-        lines: true,
-        totalAmount: true,
-      },
-    });
-
-    return updatedCart;
-  }
-
-  async findById(id: number): Promise<Cart> {
-    const cart = await this.prismaService.cart.findUnique({
-      where: {
-        id: id,
       },
       include: {
         lines: {
@@ -128,13 +53,146 @@ export class CartService {
                 featuredImage: true,
               },
             },
-            totalAmount: true,
           },
         },
-        totalAmount: true,
       },
     });
 
-    return cart;
+    if (lines) {
+      const cartItems = [];
+      for (const line of lines) {
+        const { productId, characteristicId, quantity } = line;
+
+        const { priceId } = characteristicId
+          ? await this.characteristicService.findById(characteristicId)
+          : await this.productService.findById(productId);
+
+        const price = await this.moneyService.findById(priceId);
+
+        const cartItemTotalAmount = {
+          totalAmount: {
+            amount: quantity * price.amount,
+            currencyCode: price.currencyCode,
+          },
+        };
+
+        const cartItem = {
+          ...line,
+          ...cartItemTotalAmount,
+        };
+
+        cartItems.push(cartItem);
+      }
+
+      const totalQuantity = cartItems.reduce(
+        (acc, curr) => acc + curr.quantity,
+        0,
+      );
+      const cartTotalAmountValue = cartItems.reduce(
+        (acc, curr) => acc + curr.totalAmount.amount,
+        0,
+      );
+      const cartTotalAmountCurrencyCode = cartItems.reduce(
+        (acc, curr) => curr.totalAmount.currencyCode,
+        0,
+      );
+
+      const cartTotalAmount = {
+        totalAmount: {
+          amount: cartTotalAmountValue,
+          currencyCode: cartTotalAmountCurrencyCode,
+        },
+      };
+
+      return {
+        id,
+        lines: cartItems,
+        totalQuantity,
+        ...cartTotalAmount,
+      };
+    }
+
+    return {
+      id,
+      lines: null,
+      totalQuantity: null,
+      totalAmount: null,
+    };
+  }
+
+  async addLines(cartId: number, lines: CartLineInput[]): Promise<Cart> {
+    const createdOrUpdatesCartItems = [];
+
+    for (const line of lines) {
+      const { productId, characteristicId, quantity } = line;
+
+      const optionalCartItem = characteristicId
+        ? await this.prismaService.cartItem.findFirst({
+            where: {
+              cartId: cartId,
+              productId: parseInt(productId),
+              characteristicId: parseInt(characteristicId),
+            },
+          })
+        : await this.prismaService.cartItem.findFirst({
+            where: {
+              cartId: cartId,
+              productId: parseInt(productId),
+            },
+          });
+
+      if (optionalCartItem) {
+        const cartItem = await this.prismaService.cartItem.update({
+          where: {
+            id: optionalCartItem.id,
+          },
+          data: {
+            quantity: {
+              increment: quantity,
+            },
+          },
+        });
+        createdOrUpdatesCartItems.push(cartItem);
+      } else {
+        const cartItem = await this.prismaService.cartItem.create({
+          data: {
+            quantity: quantity,
+            product: {
+              connect: { id: parseInt(productId) },
+            },
+            characteristic: characteristicId
+              ? { connect: { id: parseInt(characteristicId) } }
+              : {},
+            cart: {
+              connect: { id: cartId },
+            },
+          },
+        });
+
+        createdOrUpdatesCartItems.push(cartItem);
+      }
+    }
+
+    const updatedCart = await this.prismaService.cart.update({
+      where: {
+        id: cartId,
+      },
+      data: {
+        lines: {
+          connect: createdOrUpdatesCartItems.map((cartItem) => ({
+            id: cartItem.id,
+          })),
+        },
+      },
+      include: {
+        lines: true,
+      },
+    });
+
+    return await this.getCartForClient(cartId);
+  }
+
+  async findById(id: number): Promise<Cart> {
+    return await this.getCartForClient(id);
   }
 }
