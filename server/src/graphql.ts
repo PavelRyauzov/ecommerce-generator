@@ -51,6 +51,8 @@ export abstract class IMutation {
     abstract createCart(input?: Nullable<CartLineInput[]>): Cart | Promise<Cart>;
 
     abstract cartLinesAdd(cartId: string, lines?: Nullable<CartLineInput[]>): Cart | Promise<Cart>;
+
+    abstract cartLinesRemove(cartId: string, lineIds?: Nullable<Nullable<string>[]>): Cart | Promise<Cart>;
 }
 
 export class Characteristic {

@@ -17,6 +17,10 @@ const cartFragment = /* GraphQL */ `
                     altText
                 }
             }
+            characteristic {
+                id
+                title
+            }
         }
         totalQuantity
         totalAmount {

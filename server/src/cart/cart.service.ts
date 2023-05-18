@@ -15,7 +15,7 @@ export class CartService {
     private readonly characteristicService: CharacteristicService,
   ) {}
 
-  async create(inputs: CartLineInput[]): Promise<Cart> {
+  async create(inputs: CartLineInput[]) {
     const cart = await this.prismaService.cart.create({
       data: {},
       include: {
@@ -53,6 +53,7 @@ export class CartService {
                 featuredImage: true,
               },
             },
+            characteristic: true,
           },
         },
       },
@@ -120,7 +121,7 @@ export class CartService {
     };
   }
 
-  async addLines(cartId: number, lines: CartLineInput[]): Promise<Cart> {
+  async addLines(cartId: number, lines: CartLineInput[]) {
     const createdOrUpdatesCartItems = [];
 
     for (const line of lines) {
@@ -192,7 +193,18 @@ export class CartService {
     return await this.getCartForClient(cartId);
   }
 
-  async findById(id: number): Promise<Cart> {
+  async removeLines(cartId: number, lineIds: string[]) {
+    for (const lineId of lineIds) {
+      const cartItem = await this.prismaService.cartItem.delete({
+        where: {
+          id: parseInt(lineId),
+        },
+      });
+    }
+    return await this.getCartForClient(cartId);
+  }
+
+  async findById(id: number) {
     return await this.getCartForClient(id);
   }
 }

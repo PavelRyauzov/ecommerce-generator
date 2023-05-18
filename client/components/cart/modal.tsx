@@ -18,13 +18,11 @@ type MerchandiseSearchParams = {
 export default function CartModal({
   isOpen,
   onClose,
-  cart,
-  staticFilesUrl
+  cart
 }: {
   isOpen: boolean;
   onClose: () => void;
   cart: Cart;
-  staticFilesUrl?: string;
 }) {
   return (
     <AnimatePresence initial={false}>
@@ -110,10 +108,12 @@ export default function CartModal({
                             </div>
                             <div className="flex flex-1 flex-col text-base">
                               <span className="font-semibold">{item.product.title}</span>
-                              {item.product.title ? (
-                                <p className="text-sm" data-testid="cart-product-variant">
-                                  {item.product.title}
-                                </p>
+                              {item.characteristic ? (
+                                item.characteristic.title ? (
+                                  <p className="text-sm" data-testid="cart-product-variant">
+                                    {item.characteristic.title}
+                                  </p>
+                                ) : null
                               ) : null}
                             </div>
                             <Price

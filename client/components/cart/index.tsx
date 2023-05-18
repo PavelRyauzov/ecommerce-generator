@@ -7,16 +7,10 @@ export default async function Cart() {
   let cartIdUpdated = false;
   let cart;
 
-  console.log('CART!!!!!!!!!!!, ', cartId);
-
   if (cartId) {
     cart = await getCart(cartId);
-    console.dir(cart, { depth: null });
   }
 
-  // If the `cartId` from the cookie is not set or the cart is empty
-  // (old carts becomes `null` when you checkout), then get a new `cartId`
-  //  and re-fetch the cart.
   if (!cartId || !cart) {
     cart = await createCart();
     cartIdUpdated = true;

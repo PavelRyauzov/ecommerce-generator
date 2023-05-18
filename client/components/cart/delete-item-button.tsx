@@ -19,6 +19,7 @@ export default function DeleteItemButton({ item }: { item: CartItem }) {
         lineId: item.id
       })
     });
+
     const data = await response.json();
 
     if (data.error) {

@@ -27,4 +27,13 @@ export class CartResolver {
     const cart = await this.cartService.addLines(parseInt(cartId), lines);
     return cart;
   }
+
+  @Mutation('cartLinesRemove')
+  async removeLines(
+    @Args('cartId') cartId: string,
+    @Args('lineIds') lineIds: string[],
+  ) {
+    const cart = await this.cartService.removeLines(parseInt(cartId), lineIds);
+    return cart;
+  }
 }
