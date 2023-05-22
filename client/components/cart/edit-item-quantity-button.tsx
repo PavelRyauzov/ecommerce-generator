@@ -25,7 +25,7 @@ export default function EditItemQuantityButton({
       body: JSON.stringify({
         lineId: item.id,
         productId: item.product.id,
-        characteristicId: item.characteristic.id,
+        characteristicId: item.characteristic ? item.characteristic.id : null,
         quantity: type === 'plus' ? item.quantity + 1 : item.quantity - 1
       })
     });
