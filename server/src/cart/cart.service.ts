@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Cart } from '@prisma/client';
-import { CartLineInput } from '../graphql';
+import { CartLineInput, CartLineUpdateInput } from '../graphql';
 import { MoneyService } from '../money/money.service';
 import { ProductService } from '../product/product.service';
 import { CharacteristicService } from '../characteristic/characteristic.service';
@@ -201,6 +200,52 @@ export class CartService {
         },
       });
     }
+    return await this.getCartForClient(cartId);
+  }
+
+  async updateLines(cartId: number, lines: CartLineUpdateInput[]) {
+    for (const line of lines) {
+      const { id, productId, characteristicId, quantity } = line;
+
+      const optionalCartItem = characteristicId
+        ? await this.prismaService.cartItem.findFirst({
+            where: {
+              cartId: cartId,
+              productId: parseInt(productId),
+              characteristicId: parseInt(characteristicId),
+            },
+          })
+        : await this.prismaService.cartItem.findFirst({
+            where: {
+              cartId: cartId,
+              productId: parseInt(productId),
+            },
+          });
+
+      if (optionalCartItem) {
+        const updatedCartItem = characteristicId
+          ? await this.prismaService.cartItem.update({
+              where: {
+                id: parseInt(id),
+              },
+              data: {
+                productId: parseInt(productId),
+                characteristicId: parseInt(characteristicId),
+                quantity: quantity,
+              },
+            })
+          : await this.prismaService.cartItem.update({
+              where: {
+                id: parseInt(id),
+              },
+              data: {
+                productId: parseInt(productId),
+                quantity: quantity,
+              },
+            });
+      }
+    }
+
     return await this.getCartForClient(cartId);
   }
 

@@ -13,7 +13,12 @@ import {
 } from '@/lib/nestjs-server/queries/product';
 import { getCollectionProductsQuery } from '@/lib/nestjs-server/queries/collection';
 import { getCartQuery } from '@/lib/nestjs-server/queries/cart';
-import { addToCartMutation, createCartMutation, removeFromCartMutation } from '@/lib/nestjs-server/mutations/cart';
+import {
+  addToCartMutation,
+  createCartMutation,
+  editCartItemsMutation,
+  removeFromCartMutation
+} from '@/lib/nestjs-server/mutations/cart';
 
 const domain = `http://${process.env.SERVER_DOMAIN!}`;
 const endpoint = `${domain}${SERVER_GRAPHQL_API_ENDPOINT}`;
@@ -207,6 +212,22 @@ export async function removeFromCart(cartId: string, lineIds: string[]): Promise
   return reshapeCart(res.body.data.cartLinesRemove.cart);
 }
 
+export async function updateCart(
+  cartId: string,
+  lines: { id: string; productId: string; characteristicId?: string; quantity: number }[]
+): Promise<Cart> {
+  const res = await serverFetch<UpdateCartOperation>({
+    query: editCartItemsMutation,
+    variables: {
+      cartId,
+      lines
+    },
+    cache: 'no-store'
+  });
+
+  return reshapeCart(res.body.data.cartLinesUpdate.cart);
+}
+
 export type AddToCartOperation = {
   data: {
     cartLinesAdd: {
@@ -217,7 +238,7 @@ export type AddToCartOperation = {
     cartId: string;
     lines: {
       productId: string;
-      characteristicId: string;
+      characteristicId?: string;
       quantity: number;
     }[];
   };
@@ -232,5 +253,22 @@ export type RemoveFromCartOperation = {
   variables: {
     cartId: string;
     lineIds: string[];
+  };
+};
+
+export type UpdateCartOperation = {
+  data: {
+    cartLinesUpdate: {
+      cart: Cart;
+    };
+  };
+  variables: {
+    cartId: string;
+    lines: {
+      id: string;
+      productId: string;
+      characteristicId?: string;
+      quantity: number;
+    }[];
   };
 };

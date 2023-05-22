@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CartService } from './cart.service';
-import { CartLineInput } from '../graphql';
+import { CartLineInput, CartLineUpdateInput } from '../graphql';
 
 @Resolver('Cart')
 export class CartResolver {
@@ -34,6 +34,15 @@ export class CartResolver {
     @Args('lineIds') lineIds: string[],
   ) {
     const cart = await this.cartService.removeLines(parseInt(cartId), lineIds);
+    return cart;
+  }
+
+  @Mutation('cartLinesUpdate')
+  async updateLines(
+    @Args('cartId') cartId: string,
+    @Args('lines') lines: CartLineUpdateInput[],
+  ) {
+    const cart = await this.cartService.updateLines(parseInt(cartId), lines);
     return cart;
   }
 }

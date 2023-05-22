@@ -19,6 +19,13 @@ input CartLineInput {
     quantity: Int!
 }
 
+input CartLineUpdateInput {
+    id: ID!
+    productId: ID!,
+    characteristicId: ID,
+    quantity: Int!
+}
+
 type Query {
     cart(id: ID!): Cart
 }
@@ -27,4 +34,5 @@ type Mutation {
     createCart(input: [CartLineInput!]): Cart!
     cartLinesAdd(cartId: ID!, lines: [CartLineInput!]): Cart!
     cartLinesRemove(cartId: ID!, lineIds: [ID]): Cart!
+    cartLinesUpdate(cartId: ID!, lines: [CartLineUpdateInput!]): Cart!
 }

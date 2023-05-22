@@ -24,7 +24,8 @@ export default function EditItemQuantityButton({
       method: type === 'minus' && item.quantity - 1 === 0 ? 'DELETE' : 'PUT',
       body: JSON.stringify({
         lineId: item.id,
-        variantId: item.merchandise.id,
+        productId: item.product.id,
+        characteristicId: item.characteristic.id,
         quantity: type === 'plus' ? item.quantity + 1 : item.quantity - 1
       })
     });
@@ -42,6 +43,7 @@ export default function EditItemQuantityButton({
       router.refresh();
     });
   }
+
   return (
     <button
       aria-label={type === 'plus' ? 'Increase item quantity' : 'Reduce item quantity'}

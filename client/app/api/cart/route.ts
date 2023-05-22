@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { addToCart, removeFromCart } from '@/lib/nestjs-server';
+import { addToCart, removeFromCart, updateCart } from '@/lib/nestjs-server';
 
 export async function POST(req: NextRequest): Promise<Response> {
   const cartId = cookies().get('cartId')?.value;
@@ -23,35 +23,45 @@ export async function POST(req: NextRequest): Promise<Response> {
     return NextResponse.json({ status: 500 });
   }
 }
-//
-// export async function PUT(req: NextRequest): Promise<Response> {
-//   const cartId = cookies().get('cartId')?.value;
-//   const { variantId, quantity, lineId } = await req.json();
-//
-//   if (!cartId || !variantId || !quantity || !lineId) {
-//     return NextResponse.json(
-//       { error: 'Missing cartId, variantId, lineId, or quantity' },
-//       { status: 400 }
-//     );
-//   }
-//   try {
-//     await updateCart(cartId, [
-//       {
-//         id: lineId,
-//         merchandiseId: variantId,
-//         quantity
-//       }
-//     ]);
-//     return NextResponse.json({ status: 204 });
-//   } catch (e) {
-//     if (e) {
-//       return NextResponse.json({ message: e });
-//     }
-//
-//     return NextResponse.json({ status: 500 });
-//   }
-// }
-//
+
+export async function PUT(req: NextRequest): Promise<Response> {
+  const cartId = cookies().get('cartId')?.value;
+  const { productId, characteristicId, quantity, lineId } = await req.json();
+
+  if (!cartId || !productId || !quantity || !lineId) {
+    return NextResponse.json(
+      { error: 'Missing cartId, productId, lineId, or quantity' },
+      { status: 400 }
+    );
+  }
+
+  try {
+    characteristicId
+      ? await updateCart(cartId, [
+          {
+            id: lineId,
+            productId: productId,
+            characteristicId: characteristicId,
+            quantity: quantity
+          }
+        ])
+      : await updateCart(cartId, [
+          {
+            id: lineId,
+            productId: productId,
+            quantity: quantity
+          }
+        ]);
+    return NextResponse.json({ status: 204 });
+  } catch (e) {
+    if (e) {
+      return NextResponse.json({ message: e });
+    }
+
+    return NextResponse.json({ status: 500 });
+  }
+}
+
 export async function DELETE(req: NextRequest): Promise<Response> {
   const cartId = cookies().get('cartId')?.value;
   const { lineId } = await req.json();

@@ -14,6 +14,13 @@ export class CartLineInput {
     quantity: number;
 }
 
+export class CartLineUpdateInput {
+    id: string;
+    productId: string;
+    characteristicId?: Nullable<string>;
+    quantity: number;
+}
+
 export class Cart {
     id: string;
     lines?: Nullable<Nullable<CartItem>[]>;
@@ -53,6 +60,8 @@ export abstract class IMutation {
     abstract cartLinesAdd(cartId: string, lines?: Nullable<CartLineInput[]>): Cart | Promise<Cart>;
 
     abstract cartLinesRemove(cartId: string, lineIds?: Nullable<Nullable<string>[]>): Cart | Promise<Cart>;
+
+    abstract cartLinesUpdate(cartId: string, lines?: Nullable<CartLineUpdateInput[]>): Cart | Promise<Cart>;
 }
 
 export class Characteristic {
