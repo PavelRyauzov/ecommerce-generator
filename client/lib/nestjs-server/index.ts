@@ -1,17 +1,30 @@
 import {
+  AddToCartOperation,
   Cart,
+  CartOperation,
+  Collection, CollectionOperation,
   CollectionProductsOperation,
+  CollectionsOperation,
+  CreateCartOperation,
+  FrontCollection,
   Menu,
   Product,
   ProductOperation,
-  ProductRecommendationsOperation
+  ProductRecommendationsOperation,
+  ProductsOperation,
+  RemoveFromCartOperation,
+  UpdateCartOperation,
 } from '@/lib/nestjs-server/types';
-import { SERVER_GRAPHQL_API_ENDPOINT } from '@/lib/nestjs-server/constants';
+import { SERVER_GRAPHQL_API_ENDPOINT } from '@/lib/constants';
 import {
   getProductQuery,
-  getProductRecommendationsQuery
+  getProductRecommendationsQuery,
+  getProductsQuery
 } from '@/lib/nestjs-server/queries/product';
-import { getCollectionProductsQuery } from '@/lib/nestjs-server/queries/collection';
+import {
+  getCollectionProductsQuery, getCollectionQuery,
+  getCollectionsQuery,
+} from '@/lib/nestjs-server/queries/collection';
 import { getCartQuery } from '@/lib/nestjs-server/queries/cart';
 import {
   addToCartMutation,
@@ -134,7 +147,7 @@ export async function getMenu(): Promise<Menu[]> {
   const menu: Menu[] = [
     {
       title: 'All',
-      path: '/all'
+      path: '/search'
     }
   ];
   return menu;
@@ -163,24 +176,9 @@ export async function createCart(): Promise<Cart> {
   return reshapeCart(res.body.data.createCart);
 }
 
-export type CreateCartOperation = {
-  data: {
-    createCart: Cart;
-  };
-};
-
 const reshapeCart = (cart: Cart): Cart => {
   return {
     ...cart
-  };
-};
-
-export type CartOperation = {
-  data: {
-    cart: Cart;
-  };
-  variables: {
-    cartId: string;
   };
 };
 
@@ -228,47 +226,77 @@ export async function updateCart(
   return reshapeCart(res.body.data.cartLinesUpdate.cart);
 }
 
-export type AddToCartOperation = {
-  data: {
-    cartLinesAdd: {
-      cart: Cart;
-    };
-  };
-  variables: {
-    cartId: string;
-    lines: {
-      productId: string;
-      characteristicId?: string;
-      quantity: number;
-    }[];
-  };
+export async function getProducts({
+  query,
+  reverse,
+  sortKey
+}: {
+  query?: string;
+  reverse?: boolean;
+  sortKey?: string;
+}): Promise<Product[]> {
+  const res = await serverFetch<ProductsOperation>({
+    query: getProductsQuery,
+    variables: {
+      query,
+      reverse,
+      sortKey
+    }
+  });
+
+  return reshapeProducts(res.body.data.products);
+}
+
+export async function getCollections(): Promise<FrontCollection[]> {
+  const res = await serverFetch<CollectionsOperation>({ query: getCollectionsQuery });
+  const serverCollections = res.body?.data?.collections;
+  const collections = [
+    {
+      id: '',
+      title: 'All',
+      path: '/search'
+    },
+
+    ...reshapeCollections(serverCollections)
+  ];
+
+  return collections;
+}
+
+export async function getCollection(handle: string): Promise<Collection | undefined> {
+  const res = await serverFetch<CollectionOperation>({
+    query: getCollectionQuery,
+    variables: {
+      handle
+    }
+  });
+
+  return reshapeCollection(res.body.data.collection);
+}
+
+const reshapeCollections = (collections: Collection[]) => {
+  const reshapedCollections = [];
+
+  for (const collection of collections) {
+    if (collection) {
+      const reshapedCollection = reshapeCollection(collection);
+
+      if (reshapedCollection) {
+        reshapedCollections.push(reshapedCollection);
+      }
+    }
+  }
+
+  return reshapedCollections;
 };
 
-export type RemoveFromCartOperation = {
-  data: {
-    cartLinesRemove: {
-      cart: Cart;
-    };
-  };
-  variables: {
-    cartId: string;
-    lineIds: string[];
-  };
-};
+const reshapeCollection = (collection: Collection): FrontCollection | undefined => {
+  if (!collection) {
+    return undefined;
+  }
 
-export type UpdateCartOperation = {
-  data: {
-    cartLinesUpdate: {
-      cart: Cart;
-    };
-  };
-  variables: {
-    cartId: string;
-    lines: {
-      id: string;
-      productId: string;
-      characteristicId?: string;
-      quantity: number;
-    }[];
+  return {
+    ...collection,
+    path: `/search/${collection.id}`
   };
 };

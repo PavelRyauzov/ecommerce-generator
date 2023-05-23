@@ -17,3 +17,12 @@ export const getProductRecommendationsQuery = /* GraphQL */ `
     }
     ${productFragment}
 `;
+
+export const getProductsQuery = /* GraphQL */ `
+    query getProducts($sortKey: String!, $reverse: Boolean!, $query: String) {
+        products(sortKey: $sortKey, reverse: $reverse, query: $query) {
+            ...product
+        }
+    }
+    ${productFragment}
+`;

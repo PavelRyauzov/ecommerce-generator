@@ -7,8 +7,16 @@ export class ProductResolver {
   constructor(private productService: ProductService) {}
 
   @Query('products')
-  async products() {
-    const products = await this.productService.findAll();
+  async products(
+    @Args('sortKey') sortKey: string,
+    @Args('reverse') reverse: boolean,
+    @Args('query') query: string,
+  ) {
+    const products = await this.productService.findByParams(
+      sortKey,
+      reverse,
+      query,
+    );
     return products;
   }
 

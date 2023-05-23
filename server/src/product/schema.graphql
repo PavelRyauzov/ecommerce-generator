@@ -12,7 +12,7 @@ type Product {
 }
 
 type Query {
-    products: [Product!]!
+    products(sortKey: String!, reverse: Boolean!, query: String): [Product]
     product(id: ID!): Product
     productRecommendations(id: ID!): [Product]
 }

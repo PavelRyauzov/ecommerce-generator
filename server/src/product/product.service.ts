@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Product } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -14,6 +19,12 @@ export class ProductService {
     private readonly moneyService: MoneyService,
     private readonly imageService: ImageService,
   ) {}
+
+  private sorting = [
+    { sortKey: 'RELEVANCE' },
+    { sortKey: 'CREATED_AT' },
+    { sortKey: 'PRICE' },
+  ];
 
   async create(
     productDto: CreateProductDto,
@@ -133,5 +144,83 @@ export class ProductService {
       take: 10,
     });
     return products;
+  }
+
+  async findByParams(
+    sortKey: string,
+    reverse: boolean,
+    query: string,
+  ): Promise<Product[]> {
+    if (!this.sorting.some((item) => item.sortKey === sortKey)) {
+      throw new HttpException(
+        'Incorrect sorting key',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    switch (sortKey) {
+      case 'CREATED_AT':
+        return await this.prismaService.product.findMany({
+          where: {
+            title: {
+              search: query === '' ? undefined : query,
+            },
+          },
+          orderBy: {
+            createdAt: reverse ? 'desc' : 'asc',
+          },
+          include: {
+            images: true,
+            featuredImage: true,
+            characteristics: {
+              include: {
+                price: true,
+              },
+            },
+            price: true,
+          },
+        });
+      case 'PRICE':
+        return await this.prismaService.product.findMany({
+          where: {
+            title: {
+              search: query === '' ? undefined : query,
+            },
+          },
+          orderBy: {
+            price: {
+              amount: reverse ? 'desc' : 'asc',
+            },
+          },
+          include: {
+            images: true,
+            featuredImage: true,
+            characteristics: {
+              include: {
+                price: true,
+              },
+            },
+            price: true,
+          },
+        });
+      case 'RELEVANCE':
+        return await this.prismaService.product.findMany({
+          where: {
+            title: {
+              search: query === '' ? undefined : query,
+            },
+          },
+          include: {
+            images: true,
+            featuredImage: true,
+            characteristics: {
+              include: {
+                price: true,
+              },
+            },
+            price: true,
+          },
+        });
+    }
   }
 }
