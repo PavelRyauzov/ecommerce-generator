@@ -12,16 +12,16 @@ import {
   Menu,
   Product,
   ProductOperation,
-  ProductRecommendationsOperation,
+  ProductRecommendationsOperation, ProductsForDemonstrationOperation,
   ProductsOperation,
   RemoveFromCartOperation,
-  UpdateCartOperation
+  UpdateCartOperation,
 } from '@/lib/nestjs-server/types';
 import { SERVER_GRAPHQL_API_ENDPOINT } from '@/lib/constants';
 import {
   getProductQuery,
-  getProductRecommendationsQuery,
-  getProductsQuery
+  getProductRecommendationsQuery, getProductsForDemonstrationQuery,
+  getProductsQuery,
 } from '@/lib/nestjs-server/queries/product';
 import {
   getCollectionProductsQuery,
@@ -304,4 +304,12 @@ export async function getProducts({
   });
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+}
+
+export async function getProductsForDemonstration(): Promise<Product[]> {
+  const res = await serverFetch<ProductsForDemonstrationOperation>({
+    query: getProductsForDemonstrationQuery
+  });
+
+  return reshapeProducts(res.body.data.productsForDemonstration);
 }

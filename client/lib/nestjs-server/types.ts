@@ -177,4 +177,10 @@ export type ProductsOperation = {
   };
 };
 
+export type ProductsForDemonstrationOperation = {
+  data: {
+    productsForDemonstration: Product[];
+  };
+};
+
 

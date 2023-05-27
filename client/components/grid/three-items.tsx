@@ -1,5 +1,5 @@
 import { GridTileImage } from '@/components/grid/tile';
-import { getCollectionProducts } from '@/lib/nestjs-server';
+import { getCollectionProducts, getProductsForDemonstration } from '@/lib/nestjs-server';
 import type { Product } from '@/lib/nestjs-server/types';
 import Link from 'next/link';
 
@@ -37,7 +37,7 @@ function ThreeItemGridItem({
 
 export async function ThreeItemGrid() {
   // Collections that start with `hidden-*` are hidden from the search page.
-  const homepageItems = await getCollectionProducts('1');
+  const homepageItems = await getProductsForDemonstration();
 
   if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) return null;
 

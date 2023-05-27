@@ -99,6 +99,39 @@ export class ProductService {
     return product;
   }
 
+  async findForDemonstration(): Promise<Product[]> {
+    const collections = await this.prismaService.collection.findMany({
+      take: 3,
+    });
+
+    if (!collections) {
+      throw new HttpException(
+        'Collections not found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const products = await Promise.all(
+      collections.map(async (collection) => {
+        return await this.prismaService.product.findFirst({
+          where: {
+            collectionId: collection.id,
+          },
+          ...productIncludeOptions,
+        });
+      }),
+    );
+
+    if (products.length === 0) {
+      throw new HttpException(
+        'Products not found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return products;
+  }
+
   async findById(id: number): Promise<Product> {
     const product = await this.prismaService.product.findUnique({
       where: {

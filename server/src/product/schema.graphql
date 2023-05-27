@@ -20,6 +20,7 @@ type Product {
 }
 
 type Query {
+    productsForDemonstration: [Product]
     products(sortKey: String!, reverse: Boolean!, query: String!,
         first: Int!, offset: Int): ProductConnection
     product(id: ID!): Product

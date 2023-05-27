@@ -47,6 +47,8 @@ export abstract class IQuery {
 
     abstract image(id: string): Nullable<Image> | Promise<Nullable<Image>>;
 
+    abstract productsForDemonstration(): Nullable<Nullable<Product>[]> | Promise<Nullable<Nullable<Product>[]>>;
+
     abstract products(sortKey: string, reverse: boolean, query: string, first: number, offset?: Nullable<number>): Nullable<ProductConnection> | Promise<Nullable<ProductConnection>>;
 
     abstract product(id: string): Nullable<Product> | Promise<Nullable<Product>>;

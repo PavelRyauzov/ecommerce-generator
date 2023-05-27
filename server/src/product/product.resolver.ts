@@ -38,4 +38,10 @@ export class ProductResolver {
     const product = await this.productService.findSimilar(parseInt(id));
     return product;
   }
+
+  @Query('productsForDemonstration')
+  async productsForDemonstration() {
+    const products = await this.productService.findForDemonstration();
+    return products;
+  }
 }

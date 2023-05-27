@@ -30,3 +30,12 @@ export const getProductsQuery = /* GraphQL */ `
   }
   ${productFragment}
 `;
+
+export const getProductsForDemonstrationQuery = /* GraphQL */ `
+    query getProductsForDemonstrationQuery {
+        productsForDemonstration {
+            ...product
+        }
+    }
+    ${productFragment}
+`;
