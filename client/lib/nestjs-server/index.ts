@@ -2,9 +2,11 @@ import {
   AddToCartOperation,
   Cart,
   CartOperation,
-  Collection, CollectionOperation,
+  Collection,
+  CollectionOperation,
   CollectionProductsOperation,
-  CollectionsOperation, Connection,
+  CollectionsOperation,
+  Connection,
   CreateCartOperation,
   FrontCollection,
   Menu,
@@ -13,7 +15,7 @@ import {
   ProductRecommendationsOperation,
   ProductsOperation,
   RemoveFromCartOperation,
-  UpdateCartOperation,
+  UpdateCartOperation
 } from '@/lib/nestjs-server/types';
 import { SERVER_GRAPHQL_API_ENDPOINT } from '@/lib/constants';
 import {
@@ -22,8 +24,9 @@ import {
   getProductsQuery
 } from '@/lib/nestjs-server/queries/product';
 import {
-  getCollectionProductsQuery, getCollectionQuery,
-  getCollectionsQuery,
+  getCollectionProductsQuery,
+  getCollectionQuery,
+  getCollectionsQuery
 } from '@/lib/nestjs-server/queries/collection';
 import { getCartQuery } from '@/lib/nestjs-server/queries/cart';
 import {
@@ -82,40 +85,42 @@ export async function serverFetch<T>({
   }
 }
 
-export async function getProduct(id: string): Promise<Product | undefined> {
-  const res = await serverFetch<ProductOperation>({
-    query: getProductQuery,
-    variables: {
-      id
+const removeEdgesAndNodes = (array: Connection<any>) => {
+  return array.edges.map((edge) => edge?.node);
+};
+
+const reshapeCart = (cart: Cart): Cart => {
+  return {
+    ...cart
+  };
+};
+
+const reshapeCollection = (collection: Collection): FrontCollection | undefined => {
+  if (!collection) {
+    return undefined;
+  }
+
+  return {
+    ...collection,
+    path: `/search/${collection.id}`
+  };
+};
+
+const reshapeCollections = (collections: Collection[]) => {
+  const reshapedCollections = [];
+
+  for (const collection of collections) {
+    if (collection) {
+      const reshapedCollection = reshapeCollection(collection);
+
+      if (reshapedCollection) {
+        reshapedCollections.push(reshapedCollection);
+      }
     }
-  });
+  }
 
-  return reshapeProduct(res.body.data.product);
-}
-
-export async function getCollectionProducts(id: string): Promise<Product[]> {
-  const res = await serverFetch<CollectionProductsOperation>({
-    query: getCollectionProductsQuery,
-    variables: {
-      id
-    }
-  });
-
-  //console.log(res);
-
-  return reshapeProducts(res.body.data.collection.products);
-}
-
-export async function getProductRecommendations(productId: string): Promise<Product[]> {
-  const res = await serverFetch<ProductRecommendationsOperation>({
-    query: getProductRecommendationsQuery,
-    variables: {
-      productId
-    }
-  });
-
-  return reshapeProducts(res.body.data.productRecommendations);
-}
+  return reshapedCollections;
+};
 
 const reshapeProduct = (product: Product) => {
   if (!product) {
@@ -143,30 +148,6 @@ const reshapeProducts = (products: Product[]) => {
   return reshapedProducts;
 };
 
-export async function getMenu(): Promise<Menu[]> {
-  const menu: Menu[] = [
-    {
-      title: 'All',
-      path: '/search'
-    }
-  ];
-  return menu;
-}
-
-export async function getCart(cartId: string): Promise<Cart | null> {
-  const res = await serverFetch<CartOperation>({
-    query: getCartQuery,
-    variables: { cartId },
-    cache: 'no-store'
-  });
-
-  if (!res.body.data.cart) {
-    return null;
-  }
-
-  return reshapeCart(res.body.data.cart);
-}
-
 export async function createCart(): Promise<Cart> {
   const res = await serverFetch<CreateCartOperation>({
     query: createCartMutation,
@@ -175,12 +156,6 @@ export async function createCart(): Promise<Cart> {
 
   return reshapeCart(res.body.data.createCart);
 }
-
-const reshapeCart = (cart: Cart): Cart => {
-  return {
-    ...cart
-  };
-};
 
 export async function addToCart(
   cartId: string,
@@ -226,6 +201,90 @@ export async function updateCart(
   return reshapeCart(res.body.data.cartLinesUpdate.cart);
 }
 
+export async function getCart(cartId: string): Promise<Cart | null> {
+  const res = await serverFetch<CartOperation>({
+    query: getCartQuery,
+    variables: { cartId },
+    cache: 'no-store'
+  });
+
+  if (!res.body.data.cart) {
+    return null;
+  }
+
+  return reshapeCart(res.body.data.cart);
+}
+
+export async function getCollection(handle: string): Promise<Collection | undefined> {
+  const res = await serverFetch<CollectionOperation>({
+    query: getCollectionQuery,
+    variables: {
+      handle
+    }
+  });
+
+  return reshapeCollection(res.body.data.collection);
+}
+
+export async function getCollectionProducts(id: string): Promise<Product[]> {
+  const res = await serverFetch<CollectionProductsOperation>({
+    query: getCollectionProductsQuery,
+    variables: {
+      id
+    }
+  });
+
+  return reshapeProducts(res.body.data.collection.products);
+}
+
+export async function getCollections(): Promise<FrontCollection[]> {
+  const res = await serverFetch<CollectionsOperation>({ query: getCollectionsQuery });
+  const serverCollections = res.body?.data?.collections;
+  const collections = [
+    {
+      id: '',
+      title: 'All',
+      path: '/search'
+    },
+
+    ...reshapeCollections(serverCollections)
+  ];
+
+  return collections;
+}
+
+export async function getMenu(): Promise<Menu[]> {
+  const menu: Menu[] = [
+    {
+      title: 'All',
+      path: '/search'
+    }
+  ];
+  return menu;
+}
+
+export async function getProduct(id: string): Promise<Product | undefined> {
+  const res = await serverFetch<ProductOperation>({
+    query: getProductQuery,
+    variables: {
+      id
+    }
+  });
+
+  return reshapeProduct(res.body.data.product);
+}
+
+export async function getProductRecommendations(productId: string): Promise<Product[]> {
+  const res = await serverFetch<ProductRecommendationsOperation>({
+    query: getProductRecommendationsQuery,
+    variables: {
+      productId
+    }
+  });
+
+  return reshapeProducts(res.body.data.productRecommendations);
+}
+
 export async function getProducts({
   query,
   reverse,
@@ -246,61 +305,3 @@ export async function getProducts({
 
   return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
 }
-
-const removeEdgesAndNodes = (array: Connection<any>) => {
-  return array.edges.map((edge) => edge?.node);
-};
-
-export async function getCollections(): Promise<FrontCollection[]> {
-  const res = await serverFetch<CollectionsOperation>({ query: getCollectionsQuery });
-  const serverCollections = res.body?.data?.collections;
-  const collections = [
-    {
-      id: '',
-      title: 'All',
-      path: '/search'
-    },
-
-    ...reshapeCollections(serverCollections)
-  ];
-
-  return collections;
-}
-
-export async function getCollection(handle: string): Promise<Collection | undefined> {
-  const res = await serverFetch<CollectionOperation>({
-    query: getCollectionQuery,
-    variables: {
-      handle
-    }
-  });
-
-  return reshapeCollection(res.body.data.collection);
-}
-
-const reshapeCollections = (collections: Collection[]) => {
-  const reshapedCollections = [];
-
-  for (const collection of collections) {
-    if (collection) {
-      const reshapedCollection = reshapeCollection(collection);
-
-      if (reshapedCollection) {
-        reshapedCollections.push(reshapedCollection);
-      }
-    }
-  }
-
-  return reshapedCollections;
-};
-
-const reshapeCollection = (collection: Collection): FrontCollection | undefined => {
-  if (!collection) {
-    return undefined;
-  }
-
-  return {
-    ...collection,
-    path: `/search/${collection.id}`
-  };
-};
