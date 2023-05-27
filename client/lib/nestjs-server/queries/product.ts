@@ -10,19 +10,23 @@ export const getProductQuery = /* GraphQL */ `
 `;
 
 export const getProductRecommendationsQuery = /* GraphQL */ `
-    query getProductRecommendations($productId: ID!) {
-        productRecommendations(id: $productId) {
-            ...product
-        }
+  query getProductRecommendations($productId: ID!) {
+    productRecommendations(id: $productId) {
+      ...product
     }
-    ${productFragment}
+  }
+  ${productFragment}
 `;
 
 export const getProductsQuery = /* GraphQL */ `
-    query getProducts($sortKey: String!, $reverse: Boolean!, $query: String) {
-        products(sortKey: $sortKey, reverse: $reverse, query: $query) {
-            ...product
+  query getProducts($sortKey: String!, $reverse: Boolean!, $query: String!) {
+    products(sortKey: $sortKey, reverse: $reverse, query: $query, first: 100) {
+      edges {
+        node {
+          ...product
         }
+      }
     }
-    ${productFragment}
+  }
+  ${productFragment}
 `;

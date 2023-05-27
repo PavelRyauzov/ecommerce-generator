@@ -1,3 +1,11 @@
+type ProductConnection {
+    edges: [ProductEdge]
+}
+
+type ProductEdge {
+    node: Product
+}
+
 type Product {
     id: ID!
     availableForSale: Boolean!
@@ -12,7 +20,8 @@ type Product {
 }
 
 type Query {
-    products(sortKey: String!, reverse: Boolean!, query: String): [Product]
+    products(sortKey: String!, reverse: Boolean!, query: String!,
+        first: Int!, offset: Int): ProductConnection
     product(id: ID!): Product
     productRecommendations(id: ID!): [Product]
 }

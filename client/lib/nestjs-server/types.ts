@@ -1,3 +1,11 @@
+export type Connection<T> = {
+  edges: Array<Edge<T>>;
+};
+
+export type Edge<T> = {
+  node: T;
+};
+
 export type Menu = {
   title: string;
   path: string;
@@ -141,7 +149,7 @@ export type RemoveFromCartOperation = {
 
 export type ProductsOperation = {
   data: {
-    products: Product[];
+    products: Connection<Product>;
   };
   variables: {
     query?: string;

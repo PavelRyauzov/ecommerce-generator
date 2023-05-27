@@ -12,6 +12,19 @@ import { CreateImageWithProductDto } from './dto/create-image-wth-product.dto';
 import { CreateMoneyDto } from '../money/dto/create-money.dto';
 import { MoneyService } from '../money/money.service';
 
+const productIncludeOptions = {
+  include: {
+    images: true,
+    featuredImage: true,
+    characteristics: {
+      include: {
+        price: true,
+      },
+    },
+    price: true,
+  },
+};
+
 @Injectable()
 export class ProductService {
   constructor(
@@ -86,33 +99,12 @@ export class ProductService {
     return product;
   }
 
-  async findAll(): Promise<Product[]> {
-    const products = await this.prismaService.product.findMany({
-      include: {
-        images: true,
-        featuredImage: true,
-        characteristics: true,
-        price: true,
-      },
-    });
-    return products;
-  }
-
   async findById(id: number): Promise<Product> {
     const product = await this.prismaService.product.findUnique({
       where: {
         id: id,
       },
-      include: {
-        images: true,
-        featuredImage: true,
-        characteristics: {
-          include: {
-            price: true,
-          },
-        },
-        price: true,
-      },
+      ...productIncludeOptions,
     });
     return product;
   }
@@ -131,16 +123,7 @@ export class ProductService {
           id: product.id,
         },
       },
-      include: {
-        images: true,
-        featuredImage: true,
-        characteristics: {
-          include: {
-            price: true,
-          },
-        },
-        price: true,
-      },
+      ...productIncludeOptions,
       take: 10,
     });
     return products;
@@ -150,6 +133,8 @@ export class ProductService {
     sortKey: string,
     reverse: boolean,
     query: string,
+    first: number,
+    offset: number,
   ): Promise<Product[]> {
     if (!this.sorting.some((item) => item.sortKey === sortKey)) {
       throw new HttpException(
@@ -158,68 +143,43 @@ export class ProductService {
       );
     }
 
+    const searchOptions = {
+      where: {
+        title: {
+          search: query === '' ? undefined : query,
+        },
+      },
+    };
+
     switch (sortKey) {
       case 'CREATED_AT':
         return await this.prismaService.product.findMany({
-          where: {
-            title: {
-              search: query === '' ? undefined : query,
-            },
-          },
+          ...searchOptions,
           orderBy: {
             createdAt: reverse ? 'desc' : 'asc',
           },
-          include: {
-            images: true,
-            featuredImage: true,
-            characteristics: {
-              include: {
-                price: true,
-              },
-            },
-            price: true,
-          },
+          ...productIncludeOptions,
+          take: first,
+          skip: offset,
         });
       case 'PRICE':
         return await this.prismaService.product.findMany({
-          where: {
-            title: {
-              search: query === '' ? undefined : query,
-            },
-          },
+          ...searchOptions,
           orderBy: {
             price: {
               amount: reverse ? 'desc' : 'asc',
             },
           },
-          include: {
-            images: true,
-            featuredImage: true,
-            characteristics: {
-              include: {
-                price: true,
-              },
-            },
-            price: true,
-          },
+          ...productIncludeOptions,
+          take: first,
+          skip: offset,
         });
       case 'RELEVANCE':
         return await this.prismaService.product.findMany({
-          where: {
-            title: {
-              search: query === '' ? undefined : query,
-            },
-          },
-          include: {
-            images: true,
-            featuredImage: true,
-            characteristics: {
-              include: {
-                price: true,
-              },
-            },
-            price: true,
-          },
+          ...searchOptions,
+          ...productIncludeOptions,
+          take: first,
+          skip: offset,
         });
     }
   }

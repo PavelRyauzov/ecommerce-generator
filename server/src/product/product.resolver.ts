@@ -1,6 +1,8 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 
 import { ProductService } from './product.service';
+import { Product } from '@prisma/client';
+import { getConnectionOutputForClient } from '../utils';
 
 @Resolver('Product')
 export class ProductResolver {
@@ -10,14 +12,19 @@ export class ProductResolver {
   async products(
     @Args('sortKey') sortKey: string,
     @Args('reverse') reverse: boolean,
-    @Args('query') query: string,
+    @Args('query') query = '',
+    @Args('first') first: number,
+    @Args('offset') offset = 0,
   ) {
     const products = await this.productService.findByParams(
       sortKey,
       reverse,
       query,
+      first,
+      offset,
     );
-    return products;
+
+    return getConnectionOutputForClient<Product>(products);
   }
 
   @Query('product')

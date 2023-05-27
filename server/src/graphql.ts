@@ -47,7 +47,7 @@ export abstract class IQuery {
 
     abstract image(id: string): Nullable<Image> | Promise<Nullable<Image>>;
 
-    abstract products(sortKey: string, reverse: boolean, query?: Nullable<string>): Nullable<Nullable<Product>[]> | Promise<Nullable<Nullable<Product>[]>>;
+    abstract products(sortKey: string, reverse: boolean, query: string, first: number, offset?: Nullable<number>): Nullable<ProductConnection> | Promise<Nullable<ProductConnection>>;
 
     abstract product(id: string): Nullable<Product> | Promise<Nullable<Product>>;
 
@@ -92,6 +92,14 @@ export class Money {
     id: string;
     amount: number;
     currencyCode: string;
+}
+
+export class ProductConnection {
+    edges?: Nullable<Nullable<ProductEdge>[]>;
+}
+
+export class ProductEdge {
+    node?: Nullable<Product>;
 }
 
 export class Product {

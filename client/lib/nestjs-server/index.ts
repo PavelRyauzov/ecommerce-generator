@@ -4,7 +4,7 @@ import {
   CartOperation,
   Collection, CollectionOperation,
   CollectionProductsOperation,
-  CollectionsOperation,
+  CollectionsOperation, Connection,
   CreateCartOperation,
   FrontCollection,
   Menu,
@@ -244,8 +244,12 @@ export async function getProducts({
     }
   });
 
-  return reshapeProducts(res.body.data.products);
+  return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
 }
+
+const removeEdgesAndNodes = (array: Connection<any>) => {
+  return array.edges.map((edge) => edge?.node);
+};
 
 export async function getCollections(): Promise<FrontCollection[]> {
   const res = await serverFetch<CollectionsOperation>({ query: getCollectionsQuery });
