@@ -15,7 +15,6 @@ export class CartResolver {
   @Mutation('createCart')
   async create(@Args('input') inputs: CartLineInput[]) {
     const cart = await this.cartService.create(inputs);
-    console.dir(cart, { depth: null });
     return cart;
   }
 

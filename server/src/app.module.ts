@@ -11,6 +11,7 @@ import { ImageModule } from './image/image.module';
 import { CharacteristicModule } from './characteristic/characteristic.module';
 import { MoneyModule } from './money/money.module';
 import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
 import * as path from 'path';
 
 @Module({
@@ -31,6 +32,7 @@ import * as path from 'path';
     CharacteristicModule,
     MoneyModule,
     CartModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],

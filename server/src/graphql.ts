@@ -21,6 +21,22 @@ export class CartLineUpdateInput {
     quantity: number;
 }
 
+export class OrderLineInput {
+    productId: string;
+    characteristicId?: Nullable<string>;
+    quantity: number;
+}
+
+export class OrderDataInput {
+    email: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
+    patronymic: string;
+    address: string;
+    zipCode: string;
+}
+
 export class Cart {
     id: string;
     lines?: Nullable<Nullable<CartItem>[]>;
@@ -47,6 +63,8 @@ export abstract class IQuery {
 
     abstract image(id: string): Nullable<Image> | Promise<Nullable<Image>>;
 
+    abstract order(id: string): Nullable<Order> | Promise<Nullable<Order>>;
+
     abstract productsForDemonstration(): Nullable<Nullable<Product>[]> | Promise<Nullable<Nullable<Product>[]>>;
 
     abstract products(sortKey: string, reverse: boolean, query: string, first: number, offset?: Nullable<number>): Nullable<ProductConnection> | Promise<Nullable<ProductConnection>>;
@@ -64,6 +82,8 @@ export abstract class IMutation {
     abstract cartLinesRemove(cartId: string, lineIds?: Nullable<Nullable<string>[]>): Cart | Promise<Cart>;
 
     abstract cartLinesUpdate(cartId: string, lines?: Nullable<CartLineUpdateInput[]>): Cart | Promise<Cart>;
+
+    abstract createOrder(dataInput: OrderDataInput, linesInput: OrderLineInput[]): Order | Promise<Order>;
 }
 
 export class Characteristic {
@@ -94,6 +114,25 @@ export class Money {
     id: string;
     amount: number;
     currencyCode: string;
+}
+
+export class Order {
+    id: string;
+    email: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
+    patronymic: string;
+    address: string;
+    zipCode: string;
+    lines: OrderItem[];
+}
+
+export class OrderItem {
+    id: string;
+    quantity: number;
+    product: Product;
+    characteristic?: Nullable<Characteristic>;
 }
 
 export class ProductConnection {

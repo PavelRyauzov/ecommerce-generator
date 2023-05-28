@@ -1,0 +1,42 @@
+type Order {
+    id: ID!
+    email: String!
+    phoneNumber: String!
+    firstName: String!
+    lastName: String!
+    patronymic: String!
+    address: String!
+    zipCode: String!
+    lines: [OrderItem!]!
+}
+
+type OrderItem {
+    id: ID!
+    quantity: Int!
+    product: Product!
+    characteristic: Characteristic
+}
+
+input OrderLineInput {
+    productId: ID!,
+    characteristicId: ID,
+    quantity: Int!
+}
+
+input OrderDataInput {
+    email: String!
+    phoneNumber: String!
+    firstName: String!
+    lastName: String!
+    patronymic: String!
+    address: String!
+    zipCode: String!
+}
+
+type Query {
+    order(id: ID!): Order
+}
+
+type Mutation {
+    createOrder(dataInput: OrderDataInput!, linesInput: [OrderLineInput!]!): Order!
+}
