@@ -1,0 +1,50 @@
+.checkoutPage {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.checkoutTitle {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.checkoutForm {
+    display: grid;
+    gap: 20px;
+}
+
+.formGroup {
+    display: grid;
+    gap: 5px;
+}
+
+label {
+    font-size: 16px;
+}
+
+.inputField {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.checkoutButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4285f4;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.checkoutButton:hover {
+    background-color: #3367d6;
+}
+
+.checkoutButton:active {
+    background-color: #2d5bb1;
+}

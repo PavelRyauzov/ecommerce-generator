@@ -7,7 +7,7 @@ export default async function Cart() {
   let cartIdUpdated = false;
   let cart;
 
-  if (cartId) {
+  if (cartId && cartId !== '-1') {
     cart = await getCart(cartId);
   }
 
