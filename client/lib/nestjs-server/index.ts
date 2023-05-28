@@ -8,20 +8,25 @@ import {
   CollectionsOperation,
   Connection,
   CreateCartOperation,
+  CreateOrderOperation,
   FrontCollection,
   Menu,
+  Order,
+  OrderOperation,
   Product,
   ProductOperation,
-  ProductRecommendationsOperation, ProductsForDemonstrationOperation,
+  ProductRecommendationsOperation,
+  ProductsForDemonstrationOperation,
   ProductsOperation,
   RemoveFromCartOperation,
-  UpdateCartOperation,
+  UpdateCartOperation
 } from '@/lib/nestjs-server/types';
 import { SERVER_GRAPHQL_API_ENDPOINT } from '@/lib/constants';
 import {
   getProductQuery,
-  getProductRecommendationsQuery, getProductsForDemonstrationQuery,
-  getProductsQuery,
+  getProductRecommendationsQuery,
+  getProductsForDemonstrationQuery,
+  getProductsQuery
 } from '@/lib/nestjs-server/queries/product';
 import {
   getCollectionProductsQuery,
@@ -35,6 +40,8 @@ import {
   editCartItemsMutation,
   removeFromCartMutation
 } from '@/lib/nestjs-server/mutations/cart';
+import { getOrderQuery } from '@/lib/nestjs-server/queries/order';
+import { createOrderMutation } from '@/lib/nestjs-server/mutations/order';
 
 const domain = `http://${process.env.SERVER_DOMAIN!}`;
 const endpoint = `${domain}${SERVER_GRAPHQL_API_ENDPOINT}`;
@@ -92,6 +99,12 @@ const removeEdgesAndNodes = (array: Connection<any>) => {
 const reshapeCart = (cart: Cart): Cart => {
   return {
     ...cart
+  };
+};
+
+const reshapeOrder = (order: Order): Order => {
+  return {
+    ...order
   };
 };
 
@@ -312,4 +325,42 @@ export async function getProductsForDemonstration(): Promise<Product[]> {
   });
 
   return reshapeProducts(res.body.data.productsForDemonstration);
+}
+
+export async function getOrder(orderId: string): Promise<Order | null> {
+  const res = await serverFetch<OrderOperation>({
+    query: getOrderQuery,
+    variables: { orderId },
+    cache: 'no-store'
+  });
+
+  if (!res.body.data.order) {
+    return null;
+  }
+
+  return reshapeOrder(res.body.data.order);
+}
+
+export async function createOrder(
+  dataInput: {
+    email: string;
+    phoneNumber: string;
+    firstName: string;
+    lastName: string;
+    patronymic: string;
+    address: string;
+    zipCode: string;
+  },
+  linesInput: { productId: string; characteristicId?: string; quantity: number }[]
+): Promise<Order> {
+  const res = await serverFetch<CreateOrderOperation>({
+    query: createOrderMutation,
+    variables: {
+      dataInput,
+      linesInput
+    },
+    cache: 'no-store'
+  });
+
+  return reshapeOrder(res.body.data.createOrder);
 }

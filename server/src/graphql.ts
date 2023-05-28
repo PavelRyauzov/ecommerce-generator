@@ -130,9 +130,9 @@ export class Order {
 
 export class OrderItem {
     id: string;
+    productId: string;
+    characteristicId?: Nullable<string>;
     quantity: number;
-    product: Product;
-    characteristic?: Nullable<Characteristic>;
 }
 
 export class ProductConnection {

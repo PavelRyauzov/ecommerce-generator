@@ -21,18 +21,35 @@ export default function Order({ cart }: { cart: Cart | undefined | null }) {
     return <p>Cart is empty or cart items fetching error</p>;
   }
 
-  const onSubmit = data => {
-    console.log(data);
+  const onSubmit = (data) => {
     setCookie('cartId', -1, {
       path: '/',
-      sameSite: 'strict',
+      sameSite: 'strict'
     });
 
-    router.replace("/");
-    router.refresh()
+    const lines = cart.lines.map((line) => {
+      return {
+        quantity: line.quantity,
+        productId: line.product.id,
+        characteristicId: line.characteristic ? line.characteristic.id : undefined
+      };
+    });
 
-    alert("Order is processed!")
-  }
+    const body = {
+      orderData: data,
+      lines: lines
+    }
+
+    const response = fetch(`/api/order`, {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+
+    router.replace('/');
+    router.refresh();
+
+    alert('Order is processed!');
+  };
 
   return (
     <div>
@@ -45,24 +62,32 @@ export default function Order({ cart }: { cart: Cart | undefined | null }) {
                 Email
               </label>
               <input
-                {...register('email', { required: true})}
+                {...register('email', { required: true })}
                 type="email"
                 id="email"
                 className="p-2 border border-gray-300 rounded"
               />
-              {errors.email?.type === 'required' && <p className="text-red-600" role="alert">Email is required</p>}
+              {errors.email?.type === 'required' && (
+                <p className="text-red-600" role="alert">
+                  Email is required
+                </p>
+              )}
             </div>
             <div className="flex flex-col mb-4">
               <label htmlFor="phoneNumber" className="font-semibold mb-1">
                 Phone number
               </label>
               <input
-                {...register('phoneNumber', { required: true})}
+                {...register('phoneNumber', { required: true })}
                 type="tel"
                 id="phoneNumber"
                 className="p-2 border border-gray-300 rounded"
               />
-              {errors.phoneNumber?.type === 'required' && <p className="text-red-600" role="alert">Phone number is required</p>}
+              {errors.phoneNumber?.type === 'required' && (
+                <p className="text-red-600" role="alert">
+                  Phone number is required
+                </p>
+              )}
             </div>
             <div className="flex mb-4">
               <div className="w-1/3 mr-2">
@@ -70,36 +95,48 @@ export default function Order({ cart }: { cart: Cart | undefined | null }) {
                   First name
                 </label>
                 <input
-                  {...register('firstName', { required: true})}
+                  {...register('firstName', { required: true })}
                   type="text"
                   id="firstName"
                   className="p-2 border border-gray-300 rounded"
                 />
-                {errors.firstName?.type === 'required' && <p className="text-red-600" role="alert">First name is required</p>}
+                {errors.firstName?.type === 'required' && (
+                  <p className="text-red-600" role="alert">
+                    First name is required
+                  </p>
+                )}
               </div>
               <div className="w-1/3 mr-2">
                 <label htmlFor="lastName" className="font-semibold mb-1">
                   Last name
                 </label>
                 <input
-                  {...register('lastName', { required: true})}
+                  {...register('lastName', { required: true })}
                   type="text"
                   id="lastName"
                   className="p-2 border border-gray-300 rounded"
                 />
-                {errors.lastName?.type === 'required' && <p className="text-red-600" role="alert">Last name is required</p>}
+                {errors.lastName?.type === 'required' && (
+                  <p className="text-red-600" role="alert">
+                    Last name is required
+                  </p>
+                )}
               </div>
               <div className="w-1/3">
                 <label htmlFor="Patronymic" className="font-semibold mb-1">
                   Patronymic
                 </label>
                 <input
-                  {...register('patronymic', { required: true})}
+                  {...register('patronymic', { required: true })}
                   type="text"
                   id="patronymic"
                   className="p-2 border border-gray-300 rounded"
                 />
-                {errors.patronymic?.type === 'required' && <p className="text-red-600" role="alert">Patronymic is required</p>}
+                {errors.patronymic?.type === 'required' && (
+                  <p className="text-red-600" role="alert">
+                    Patronymic is required
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex mb-4">
@@ -108,24 +145,32 @@ export default function Order({ cart }: { cart: Cart | undefined | null }) {
                   Shipping address
                 </label>
                 <input
-                  {...register('address', { required: true})}
+                  {...register('address', { required: true })}
                   type="text"
                   id="address"
                   className="p-2 border border-gray-300 rounded"
                 />
-                {errors.address?.type === 'required' && <p className="text-red-600" role="alert">Address is required</p>}
+                {errors.address?.type === 'required' && (
+                  <p className="text-red-600" role="alert">
+                    Address is required
+                  </p>
+                )}
               </div>
               <div className="flex flex-col">
                 <label htmlFor="zipCode" className="font-semibold mb-1">
                   Zip code
                 </label>
                 <input
-                  {...register('zipCode', { required: true})}
+                  {...register('zipCode', { required: true })}
                   type="text"
                   id="zipCode"
                   className="p-2 border border-gray-300 rounded"
                 />
-                {errors.zipCode?.type === 'required' && <p className="text-red-600" role="alert">Zip code is required</p>}
+                {errors.zipCode?.type === 'required' && (
+                  <p className="text-red-600" role="alert">
+                    Zip code is required
+                  </p>
+                )}
               </div>
             </div>
             <button

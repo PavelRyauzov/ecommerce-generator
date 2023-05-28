@@ -21,6 +21,25 @@ export type CartItem = {
   characteristic: Characteristic;
 };
 
+export type Order = {
+  id: string;
+  email: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  patronymic: string;
+  address: string;
+  zipCode: string;
+  lines: OrderItem[];
+};
+
+export type OrderItem = {
+  id: string;
+  quantity: number;
+  product: Product;
+  characteristic: Characteristic;
+};
+
 export type FrontCollection = Collection & {
   path: string;
 };
@@ -63,15 +82,6 @@ export type Characteristic = {
   price: Money;
 };
 
-export type CartOperation = {
-  data: {
-    cart: Cart;
-  };
-  variables: {
-    cartId: string;
-  };
-};
-
 export type ProductOperation = {
   data: { product: Product };
   variables: {
@@ -79,9 +89,49 @@ export type ProductOperation = {
   };
 };
 
+export type OrderOperation = {
+  data: {
+    order: Order;
+  };
+  variables: {
+    orderId: string;
+  };
+};
+
+export type CreateOrderOperation = {
+  data: {
+    createOrder: Order;
+  };
+  variables: {
+    dataInput: {
+      email: string;
+      phoneNumber: string;
+      firstName: string;
+      lastName: string;
+      patronymic: string;
+      address: string;
+      zipCode: string;
+    };
+    linesInput: {
+      productId: string;
+      characteristicId?: string;
+      quantity: number;
+    }[];
+  };
+};
+
 export type CreateCartOperation = {
   data: {
     createCart: Cart;
+  };
+};
+
+export type CartOperation = {
+  data: {
+    cart: Cart;
+  };
+  variables: {
+    cartId: string;
   };
 };
 
@@ -181,5 +231,3 @@ export type ProductsForDemonstrationOperation = {
     productsForDemonstration: Product[];
   };
 };
-
-

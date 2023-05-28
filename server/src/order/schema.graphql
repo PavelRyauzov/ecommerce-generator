@@ -12,9 +12,9 @@ type Order {
 
 type OrderItem {
     id: ID!
+    productId: ID!,
+    characteristicId: ID,
     quantity: Int!
-    product: Product!
-    characteristic: Characteristic
 }
 
 input OrderLineInput {
