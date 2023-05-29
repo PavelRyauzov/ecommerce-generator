@@ -1,3 +1,3 @@
-# pretty-ecommerce
+# ecommerce-generator
 
-Next.js & NestJs online store app with external database integration
+Create Next.js & NestJs online store app with external database integration
