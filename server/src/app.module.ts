@@ -23,7 +23,7 @@ import * as path from 'path';
       typePaths: ['./**/*.graphql'],
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public/static'),
+      rootPath: join(__dirname, '../..', 'public/static'),
     }),
     CollectionModule,
     ProductModule,
