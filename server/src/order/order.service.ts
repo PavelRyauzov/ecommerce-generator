@@ -26,6 +26,10 @@ export class OrderService {
     });
   }
 
+  async findAll() {
+    return await this.prismaService.order.findMany();
+  }
+
   async create(dataInput: OrderDataInput, linesInputs: OrderLineInput[]) {
     const order = await this.prismaService.order.create({
       data: {

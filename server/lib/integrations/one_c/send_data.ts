@@ -27,13 +27,25 @@ export class OneCDataSender {
   private moneyService = new MoneyService(this.prismaService);
 
   public async sendData() {
-    const requestData = await this.getOrderDataFor1C(1);
+    const requestData = await this.getAllOrdersDataFor1C();
     console.log('Sending data to 1C...');
     const response = await oneCFetch('orders/', 'POST', requestData);
     console.log('Data successful sending to 1C!');
   }
 
-  private async getOrderDataFor1C(orderId: number) {
+  private async getAllOrdersDataFor1C() {
+    const orders = await this.orderService.findAll();
+
+    const ordersArr = [];
+    for (const curOrder of orders) {
+      const order = await this.getOrderDataFor1CById(curOrder.id);
+      ordersArr.push(order);
+    }
+
+    return ordersArr;
+  }
+
+  private async getOrderDataFor1CById(orderId: number) {
     const { id, lines } = await this.orderService.findById(orderId);
 
     const orderItems = [];
