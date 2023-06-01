@@ -47,6 +47,7 @@ export class Seeder {
       './base64_images/mobile_phones/iphone13_3.txt',
     );
     const iphone13 = await this.productService.create(
+      false,
       {
         availableForSale: true,
         title: 'iPhone 13',
@@ -81,6 +82,7 @@ export class Seeder {
       './base64_images/mobile_phones/iphone12_2.txt',
     );
     const iphone12 = await this.productService.create(
+      false,
       {
         availableForSale: false,
         title: 'iPhone 12',
@@ -108,6 +110,7 @@ export class Seeder {
       './base64_images/mobile_phones/iphone11_1.txt',
     );
     const iphone11 = await this.productService.create(
+      false,
       {
         availableForSale: true,
         title: 'iPhone 11',
@@ -138,6 +141,7 @@ export class Seeder {
       './base64_images/computers/macbookAir13_3.txt',
     );
     const macbookAir13 = await this.productService.create(
+      false,
       {
         availableForSale: true,
         title: 'MacBook Air 13',
@@ -172,6 +176,7 @@ export class Seeder {
       './base64_images/computers/macbookPro14_2.txt',
     );
     const macbookPro14 = await this.productService.create(
+      false,
       {
         availableForSale: true,
         title: 'MacBook Pro 14',
@@ -198,6 +203,7 @@ export class Seeder {
     // tvs
     const samsungTvImageOne = rawLoader('./base64_images/tvs/samsung_tv_1.txt');
     const samsungTv = await this.productService.create(
+      false,
       {
         availableForSale: true,
         title: 'Samsung TV',
@@ -336,3 +342,4 @@ export class Seeder {
 
 const seeder = new Seeder();
 seeder.seed();
+console.log('Seed data import is successful!');

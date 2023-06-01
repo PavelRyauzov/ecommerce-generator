@@ -56,4 +56,13 @@ export class CollectionService {
     });
     return collection;
   }
+
+  async findByExternalId(externalId: string): Promise<Collection> {
+    const collection = await this.prismaService.collection.findUnique({
+      where: {
+        externalId: externalId,
+      },
+    });
+    return collection;
+  }
 }

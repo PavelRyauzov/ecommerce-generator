@@ -15,14 +15,16 @@ export class ImageService {
 
   private readonly destDir = join(__dirname, '../..', 'public/static');
 
-  async create(dto: CreateImageDto): Promise<Image> {
+  async create(dto: CreateImageDto, from1CFlag: boolean): Promise<Image> {
     try {
       const { productId, base64, ...fields } = dto;
 
       const filePath = await this.fileService.createFileFromBase64(
         base64,
         this.destDir,
+        from1CFlag,
       );
+
       const fileName = path.basename(filePath);
 
       const image = await this.prismaService.image.create({
@@ -40,15 +42,6 @@ export class ImageService {
     } catch (e) {
       console.log(`Error creating file: ${e}`);
     }
-  }
-
-  async findAll(): Promise<Image[]> {
-    const images = await this.prismaService.image.findMany({
-      include: {
-        product: true,
-      },
-    });
-    return images;
   }
 
   async findById(id: number): Promise<Image> {

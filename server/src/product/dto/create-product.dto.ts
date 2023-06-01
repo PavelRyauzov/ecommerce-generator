@@ -3,4 +3,5 @@ export class CreateProductDto {
   readonly title: string;
   readonly description: string;
   readonly collectionId: number;
+  readonly externalId?: string;
 }

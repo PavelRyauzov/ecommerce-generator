@@ -7,11 +7,21 @@ declare const Buffer;
 
 @Injectable()
 export class FileService {
-  async createFileFromBase64(base64: string, destDir: string): Promise<string> {
+  async createFileFromBase64(
+    base64: string,
+    destDir: string,
+    from1CFlag: boolean,
+  ): Promise<string> {
     base64 = base64.replace(/\\r|\\n/g, '');
-    const [metadata, data] = base64.split(',');
-    const mimeType = metadata.split('/')[1].split(';')[0];
+    let data;
+    if (from1CFlag) {
+      [data] = base64.split(',');
+    } else {
+      [, data] = base64.split(',');
+    }
     const binaryData = Buffer.from(data, 'base64');
+
+    const mimeType = 'jpg';
 
     if (!fs.existsSync(destDir)) {
       fs.mkdirSync(destDir, { recursive: true });

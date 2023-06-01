@@ -9,9 +9,10 @@ datasource db {
 }
 
 model Collection {
-  id       Int       @id @default(autoincrement())
-  title    String
-  products Product[]
+  id         Int       @id @default(autoincrement())
+  title      String
+  products   Product[]
+  externalId String?   @unique
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -35,6 +36,8 @@ model Product {
 
   cartItems  CartItem[]
   orderItems OrderItem[]
+
+  externalId String? @unique
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -67,6 +70,8 @@ model Characteristic {
 
   cartItems  CartItem[]
   orderItems OrderItem[]
+
+  externalId String? @unique
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

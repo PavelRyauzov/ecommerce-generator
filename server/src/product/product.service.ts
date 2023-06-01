@@ -40,6 +40,7 @@ export class ProductService {
   ];
 
   async create(
+    from1CFlag: boolean,
     productDto: CreateProductDto,
     priceDto: CreateMoneyDto,
     imageDtos?: CreateImageWithProductDto[] | null,
@@ -63,10 +64,13 @@ export class ProductService {
     if (imageDtos && imageDtos.length > 0) {
       for (const imageDto of imageDtos) {
         const { isFeature, ...fields } = imageDto;
-        const image = await this.imageService.create({
-          ...fields,
-          productId: product.id,
-        });
+        const image = await this.imageService.create(
+          {
+            ...fields,
+            productId: product.id,
+          },
+          from1CFlag,
+        );
         if (isFeature) {
           product = await this.setFeaturedImage(product.id, image.id);
         }
@@ -142,6 +146,15 @@ export class ProductService {
     return product;
   }
 
+  async findByExternalId(externalId: string): Promise<Product> {
+    const product = await this.prismaService.product.findUnique({
+      where: {
+        externalId: externalId,
+      },
+    });
+    return product;
+  }
+
   async findSimilar(id: number): Promise<Product[]> {
     const product = await this.prismaService.product.findUnique({
       where: {
@@ -179,7 +192,8 @@ export class ProductService {
     const searchOptions = {
       where: {
         title: {
-          search: query === '' ? undefined : query,
+          search:
+            query === '' ? undefined : query.replace(/[^a-zA-Z0-9/"\s]/g, ''),
         },
       },
     };
