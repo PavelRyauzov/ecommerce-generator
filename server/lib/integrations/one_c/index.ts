@@ -26,7 +26,6 @@ export async function oneCFetch(
     delete requestOptions.body; // Удаление свойства body, если data не указано
   }
 
-  console.log('Fetching data...');
   const response = await fetch(domain + endpoint, requestOptions);
   const responseData = await response.json();
 
@@ -36,7 +35,6 @@ export async function oneCFetch(
     );
   }
 
-  console.log('Fetching successful!');
   return responseData;
 }
 

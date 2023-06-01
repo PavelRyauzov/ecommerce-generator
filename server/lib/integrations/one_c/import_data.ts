@@ -61,11 +61,14 @@ export class OneCDataLoader {
   );
 
   public async loadAndImportData() {
+    console.log('Fetching data...');
     const response = await oneCFetch('products/', 'GET');
+    console.log('Fetching successful!');
 
     const { collections, products, characteristics }: FullData =
       response as FullData;
 
+    console.log('Save data to db...');
     // save collections to db
     for (const collection of collections) {
       try {
@@ -156,6 +159,7 @@ export class OneCDataLoader {
         }
       }
     }
+    console.log('Data is saved in database!');
   }
 }
 

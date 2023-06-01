@@ -12,7 +12,16 @@ export class OrderService {
         id: id,
       },
       include: {
-        lines: true,
+        lines: {
+          include: {
+            product: {
+              include: {
+                featuredImage: true,
+              },
+            },
+            characteristic: true,
+          },
+        },
       },
     });
   }
